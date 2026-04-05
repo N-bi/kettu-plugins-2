@@ -5,15 +5,19 @@ import { semanticColors } from "@vendetta/ui";
 import { getAssetIDByName } from "@vendetta/ui/assets";
 import { Forms } from "@vendetta/ui/components";
 
-const { ScrollView, View, Text, TextInput, Slider } = RN;
+const { ScrollView, View, Text, TextInput, TouchableOpacity } = RN;
 const { FormRow, FormSwitchRow } = Forms;
 
+// ── Defaults ───────────────────────────────────────────────────────────────
 storage.StartupSoundEnabled ??= true;
 storage.PingSoundEnabled    ??= true;
 storage.StartupVolume       ??= 1.0;
 storage.PingVolume          ??= 1.0;
 storage.CustomStartupURL    ??= "";
 storage.CustomPingURL       ??= "";
+
+const VOLUME_STEPS = [0.25, 0.5, 0.75, 1.0];
+const VOLUME_LABELS = ["25%", "50%", "75%", "100%"];
 
 const styles = stylesheet.createThemedStyleSheet({
   versionText: {
@@ -90,31 +94,71 @@ const styles = stylesheet.createThemedStyleSheet({
     marginTop: 4,
     marginBottom: 4,
   },
-  sliderRow: {
+  volumeRow: {
     paddingHorizontal: 16,
     paddingVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
-  sliderLabel: {
-    fontSize: 13,
+  volumeLabel: {
+    fontSize: 14,
     color: semanticColors.TEXT_NORMAL,
-    marginBottom: 6,
     fontWeight: "600",
   },
-  sliderSub: {
-    fontSize: 11,
+  volumeButtons: {
+    flexDirection: "row",
+    gap: 6,
+  },
+  volBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: semanticColors.BORDER_FAINT,
+  },
+  volBtnActive: {
+    backgroundColor: semanticColors.TEXT_BRAND,
+    borderColor: semanticColors.TEXT_BRAND,
+  },
+  volBtnText: {
+    fontSize: 12,
     color: semanticColors.TEXT_MUTED,
-    marginTop: 2,
+    fontWeight: "600",
+  },
+  volBtnTextActive: {
+    color: "#FFFFFF",
   },
 });
+
+function VolumeSelector({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  return (
+    <RN.View style={styles.volumeRow}>
+      <RN.Text style={styles.volumeLabel}>🔊 Volume</RN.Text>
+      <RN.View style={styles.volumeButtons}>
+        {VOLUME_STEPS.map((step, i) => {
+          const active = Math.abs(value - step) < 0.01;
+          return (
+            <TouchableOpacity
+              key={step}
+              style={[styles.volBtn, active && styles.volBtnActive]}
+              onPress={() => onChange(step)}
+            >
+              <RN.Text style={[styles.volBtnText, active && styles.volBtnTextActive]}>
+                {VOLUME_LABELS[i]}
+              </RN.Text>
+            </TouchableOpacity>
+          );
+        })}
+      </RN.View>
+    </RN.View>
+  );
+}
 
 function BetterTableRowGroup({
   title,
   children,
-  padding = false,
-}: React.PropsWithChildren<{
-  title?: string;
-  padding?: boolean;
-}>) {
+}: React.PropsWithChildren<{ title?: string }>) {
   const groupStyles = stylesheet.createThemedStyleSheet({
     main: {
       backgroundColor: semanticColors.CARD_PRIMARY_BG,
@@ -135,23 +179,13 @@ function BetterTableRowGroup({
           </RN.View>
         </RN.View>
       )}
-      <RN.View style={groupStyles.main}>
-        {padding ? (
-          <RN.View style={{ paddingHorizontal: 16, paddingVertical: 16 }}>
-            {children}
-          </RN.View>
-        ) : (
-          children
-        )}
-      </RN.View>
+      <RN.View style={groupStyles.main}>{children}</RN.View>
     </RN.View>
   );
 }
 
 export default function Settings() {
   useProxy(storage);
-  const [startupVol, setStartupVol] = React.useState(storage.StartupVolume ?? 1.0);
-  const [pingVol, setPingVol]       = React.useState(storage.PingVolume ?? 1.0);
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: semanticColors.BACKGROUND_PRIMARY }}>
@@ -176,19 +210,10 @@ export default function Settings() {
           value={storage.StartupSoundEnabled}
           onValueChange={(v: boolean) => { storage.StartupSoundEnabled = v; }}
         />
-        <RN.View style={styles.sliderRow}>
-          <RN.Text style={styles.sliderLabel}>Volume — {Math.round(startupVol * 100)}%</RN.Text>
-          <Slider
-            minimumValue={0}
-            maximumValue={1}
-            step={0.05}
-            value={startupVol}
-            onValueChange={(v: number) => setStartupVol(v)}
-            onSlidingComplete={(v: number) => { storage.StartupVolume = v; }}
-            minimumTrackTintColor={semanticColors.TEXT_BRAND}
-            maximumTrackTintColor={semanticColors.BORDER_FAINT}
-          />
-        </RN.View>
+        <VolumeSelector
+          value={storage.StartupVolume}
+          onChange={(v) => { storage.StartupVolume = v; }}
+        />
       </BetterTableRowGroup>
 
       <RN.Text style={styles.noteText}>Custom startup sound URL (leave blank for default meow 🐱)</RN.Text>
@@ -213,19 +238,10 @@ export default function Settings() {
           value={storage.PingSoundEnabled}
           onValueChange={(v: boolean) => { storage.PingSoundEnabled = v; }}
         />
-        <RN.View style={styles.sliderRow}>
-          <RN.Text style={styles.sliderLabel}>Volume — {Math.round(pingVol * 100)}%</RN.Text>
-          <Slider
-            minimumValue={0}
-            maximumValue={1}
-            step={0.05}
-            value={pingVol}
-            onValueChange={(v: number) => setPingVol(v)}
-            onSlidingComplete={(v: number) => { storage.PingVolume = v; }}
-            minimumTrackTintColor={semanticColors.TEXT_BRAND}
-            maximumTrackTintColor={semanticColors.BORDER_FAINT}
-          />
-        </RN.View>
+        <VolumeSelector
+          value={storage.PingVolume}
+          onChange={(v) => { storage.PingVolume = v; }}
+        />
       </BetterTableRowGroup>
 
       <RN.Text style={styles.noteText}>Custom ping sound URL (leave blank for default Discord ping)</RN.Text>
@@ -255,7 +271,7 @@ export default function Settings() {
       </BetterTableRowGroup>
 
       <RN.View style={{ height: 20 }} />
-      <RN.Text style={styles.versionText}>SoundFX v1.0.0</RN.Text>
+      <RN.Text style={styles.versionText}>SoundFX v1.0.1</RN.Text>
       <RN.View style={{ height: 32 }} />
     </ScrollView>
   );
