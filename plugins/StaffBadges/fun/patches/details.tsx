@@ -33,8 +33,10 @@ const rowPatch = ([{ guildId, user }], res) => {
     }
 };
 
-export default () => {
+function patchDetails() {
     const patches = [];
     findByTypeNameAll("UserRow").forEach((UserRow) => patches.push(after("type", UserRow, rowPatch)));
     return () => patches.forEach((unpatch) => unpatch());
-};
+}
+
+export default patchDetails;
