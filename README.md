@@ -7,4 +7,4 @@ https://n-bi.github.io/kettu-plugins-2/LetItFall2
 
 # How to install sound+ ?
 paste the link into plugins section of Kettu/Rain
-  
+https://N-bi.github.io/kettu-plugins-2/sounds%2B 
