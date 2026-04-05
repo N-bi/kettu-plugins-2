@@ -9,6 +9,6 @@
     ],
     "main": "fun/index.tsx",
     "vendetta": {
-        "icon": "ic_badge"
+        "icon": "ic_edit"
     }
 }
