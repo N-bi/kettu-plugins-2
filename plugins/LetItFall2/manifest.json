@@ -1,5 +1,5 @@
 {
-    "name": "letitfallV2",
+    "name": "letitfall",
     "description": "Falling stars and drifting leaves and more! on your Discord screen",
     "authors": [
         {
@@ -7,7 +7,7 @@
             "id": "501827585806827520 & 1410396006725713982"
         }
     ],
-    "main": "LetItFall2/fun/falling.tsx",
+    "main": "/fun/falling.tsx",
     "vendetta": {
         "icon": "ic_star"
     }
