@@ -2,7 +2,6 @@ import { findByProps, findByDisplayName } from "@kettu/metro";
 import { after } from "@kettu/patcher";
 import { createPlugin } from "@kettu/plugins";
 import { showToast } from "@kettu/ui/toasts";
-import Settings from "./Settings";
 
 const defaultSettings = {
   rightAction: "reply",
@@ -86,7 +85,4 @@ export default createPlugin({
     );
 
     return () => patches.forEach((p) => p());
-  },
-
-  SettingsComponent: Settings,
-});
+  }
