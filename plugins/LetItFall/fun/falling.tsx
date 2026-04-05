@@ -9,7 +9,6 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const PERFORMANCE_MODE = !!storage.SnowPerformance;
 
-// 60% stars, 40% leaves
 const PARTICLE_TYPES = ["star", "star", "star", "leaf", "leaf"];
 const LEAF_COLORS = ["#E8A87C", "#D46A2A", "#C0392B", "#E67E22", "#A93226"];
 const STAR_COLORS = ["#FFFFFF", "#E8F4FD", "#AED6F1", "#F9E79F"];
