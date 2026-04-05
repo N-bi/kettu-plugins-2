@@ -104,6 +104,12 @@ export default {
 
                 const handler = (event) => {
     if (!event?.message) return;
+    const currentUser = findByProps("getCurrentUser")?.getCurrentUser?.();
+    if (!currentUser) return;
+    if (event.message.author?.id === currentUser.id) return;
+    const isDM = !event.message.guild_id;
+    const isMention = event.message.mentions?.some(m => m.id === currentUser.id);
+    if (!isDM && !isMention) return;
     if (pingPrepared) playPingSound();
 };
                 FluxDispatcher.subscribe("MESSAGE_CREATE", handler);
