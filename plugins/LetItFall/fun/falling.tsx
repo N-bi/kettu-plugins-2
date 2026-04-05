@@ -22,7 +22,7 @@ let initialized = false;
 function createParticle(index, startFromCurrent = false) {
     const startY = startFromCurrent ? Math.random() * SCREEN_HEIGHT : -50;
     const animValue = new Animated.Value(startY);
-    const swayValue = new Animated.Value(0);                  // NEW: horizontal sway
+    const swayValue = new Animated.Value(0);
     const rotationValue = !PERFORMANCE_MODE ? new Animated.Value(0) : null;
     const x = Math.random() * SCREEN_WIDTH;
 
@@ -32,15 +32,15 @@ function createParticle(index, startFromCurrent = false) {
     let size;
     if (!PERFORMANCE_MODE) {
         size = isLeaf
-            ? 8 + Math.random() * 6
-            : 4 + Math.random() * 5;
+            ? 8 + Math.random() * 8
+            : 4 + Math.random() * 6;
     } else {
         size = 3 + Math.random() * 4;
     }
 
     const duration = isLeaf
-        ? 9000 + Math.random() * 7000
-        : 13000 + Math.random() * 9000;
+        ? 18000 + Math.random() * 10000
+        : 25000 + Math.random() * 15000;
 
     const opacity = !PERFORMANCE_MODE
         ? 0.6 + Math.random() * 0.4
