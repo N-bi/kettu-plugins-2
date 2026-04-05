@@ -28,7 +28,48 @@
     p.sub {
       color: #888;
       font-size: 0.95rem;
-      margin-bottom: 40px;
+      margin-bottom: 20px;
+    }
+
+    .how-to {
+      background: #1f1f1f;
+      border: 1px solid #2e2e2e;
+      border-radius: 16px;
+      padding: 18px 22px;
+      width: 100%;
+      max-width: 420px;
+      margin-bottom: 28px;
+    }
+
+    .how-to h3 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #666;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .how-to ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .how-to ul li {
+      font-size: 0.88rem;
+      color: #bbb;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .how-to ul li span.check {
+      color: #3ba55d;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      margin-top: 1px;
     }
 
     .card {
@@ -66,13 +107,9 @@
       transition: opacity 0.15s;
     }
 
-    .install-btn:active {
-      opacity: 0.8;
-    }
+    .install-btn:active { opacity: 0.8; }
 
-    .install-btn.copied {
-      background: #3ba55d;
-    }
+    .install-btn.copied { background: #3ba55d; }
 
     footer {
       margin-top: 40px;
@@ -82,6 +119,50 @@
   </style>
 </head>
 <body>
+
+  <h1>kettu plugins 🌸</h1>
+  <p class="sub">by xc_aux / nabi</p>
+
+  <div class="how-to">
+    <h3>How to install</h3>
+    <ul>
+      <li><span class="check">✓</span> Click copy link on the plugin you want</li>
+      <li><span class="check">✓</span> Open Kettu / Rain / Revenge on your device</li>
+      <li><span class="check">✓</span> Go to Settings → Plugins and press +</li>
+      <li><span class="check">✓</span> Paste the link and confirm</li>
+      <li><span class="check">✓</span> Restart your app and enjoy!</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>🍂 Let it Fall</h2>
+    <p>Falling stars, leaves, rain and more on your Discord screen.</p>
+    <button class="install-btn" onclick="copy(this, 'https://n-bi.github.io/kettu-plugins-2/LetItFall2')">Copy install link</button>
+  </div>
+
+  <div class="card">
+    <h2>🔊 Sound+</h2>
+    <p>Play a custom sound on Discord open and on ping.</p>
+    <button class="install-btn" onclick="copy(this, 'https://N-bi.github.io/kettu-plugins-2/sounds%2B')">Copy install link</button>
+  </div>
+
+  <footer>open source · made with 🖤</footer>
+
+  <script>
+    function copy(btn, url) {
+      navigator.clipboard.writeText(url).then(() => {
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy install link';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html><body>
 
   <h1>kettu plugins 🌸</h1>
   <p class="sub">by xc_aux / nabi</p>
