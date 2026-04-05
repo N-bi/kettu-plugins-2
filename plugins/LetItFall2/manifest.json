@@ -1,1 +1,14 @@
-
+{
+    "name": "letitfallV2",
+    "description": "Falling stars and drifting leaves and more! on your Discord screen",
+    "authors": [
+        {
+            "name": "original maker: bwlok | edited/extended: nabi",
+            "id": "1410396006725713982"
+        }
+    ],
+    "main": "fun/falling.tsx",
+    "vendetta": {
+        "icon": "ic_star"
+    }
+}
