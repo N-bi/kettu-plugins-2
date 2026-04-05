@@ -1,3 +1,4 @@
+// v2
 import { storage } from "@vendetta/plugin";
 import patchChat from "./patches/chat";
 import patchDetails from "./patches/details";
