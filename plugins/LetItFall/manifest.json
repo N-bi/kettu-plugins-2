@@ -7,7 +7,7 @@
             "id": "1410396006725713982"
         }
     ],
-    "main": "fun/falling.tsx",
+    "main": "LetItFall/fun/falling.tsx",
     "vendetta": {
         "icon": "ic_star"
     }
