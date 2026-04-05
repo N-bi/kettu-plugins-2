@@ -11,7 +11,7 @@ const getBotLabel = TagModule.getBotLabel;
 const GuildStore = findByStoreName("GuildStore");
 const ChannelStore = findByStoreName("ChannelStore");
 
-export default () => {
+function patchName() {
     const patches = [];
     patches.push(after("default", HeaderName, ([{ channelId }], ret) => {
         ret.props.channelId = channelId;
@@ -42,4 +42,6 @@ export default () => {
         }
     }));
     return () => patches.forEach((unpatch) => unpatch());
-};
+}
+
+export default patchName;
