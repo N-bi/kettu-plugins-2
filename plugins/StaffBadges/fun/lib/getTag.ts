@@ -1,5 +1,5 @@
-//
-import { findByProps, findByStoreName } from "@vendetta/metro";
+// v3
+import { findByProps, findByStoreName } from "@revenge-mod/modules/metro";
 import { chroma, constants, i18n } from "@vendetta/metro/common";
 import { storage } from "@vendetta/plugin";
 import { rawColors } from "@vendetta/ui";
