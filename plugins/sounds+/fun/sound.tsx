@@ -1,5 +1,5 @@
 import { ReactNative } from "@vendetta/metro/common";
-import { storage } from "@vendetta/plugin";
+import { findByProps } from "@vendetta/metro";
 import settings from "./settings.js";
 
 const { DCDSoundManager } = ReactNative.NativeModules;
@@ -99,7 +99,7 @@ export default {
             });
 
             try {
-                const { FluxDispatcher, UserStore } = require("@vendetta/metro/common");
+                const FluxDispatcher = findByProps("dispatch", "subscribe", "unsubscribe");
 
                 const handler = (event) => {
     if (!event?.message) return;
