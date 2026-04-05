@@ -193,11 +193,10 @@ export default function Settings() {
       <View style={styles.container}>
         <View style={styles.emojiGroup}>
           <Text style={styles.emojiText}>🔊</Text>
-          <Text style={styles.emojiText}>🎵</Text>
         </View>
         <View style={styles.title}>
-          <Text style={styles.name}>SoundFX</Text>
-          <Text style={styles.author}>by xc_aux/nabi ✨</Text>
+          <Text style={styles.name}>Sound+</Text>
+          <Text style={styles.author}>by nabi (⁠◍⁠•⁠ᴗ⁠•⁠◍⁠)</Text>
         </View>
       </View>
 
