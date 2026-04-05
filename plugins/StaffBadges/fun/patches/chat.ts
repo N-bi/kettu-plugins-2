@@ -1,3 +1,4 @@
+// v2
 import { findByName, findByStoreName } from "@vendetta/metro";
 import { ReactNative, chroma } from "@vendetta/metro/common";
 import { after } from "@vendetta/patcher";
