@@ -1,1 +1,14 @@
-
+{
+    "name": "Sound+",
+    "description": "Play sounds on Discord open and on ping",
+    "authors": [
+        {
+            "name": "xc_aux/nabi",
+            "id": "141039600672571398"
+        }
+    ],
+    "main": "fun/sound.tsx",
+    "vendetta": {
+        "icon": "ic_audio_playing"
+    }
+}
