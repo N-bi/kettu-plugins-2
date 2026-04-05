@@ -1,4 +1,5 @@
-import { findByProps } from "@vendetta/metro";
+// v3
+import { findByProps } from "@revenge-mod/modules/metro";
 import { after } from "@vendetta/patcher";
 import { findInReactTree } from "@vendetta/utils";
 
