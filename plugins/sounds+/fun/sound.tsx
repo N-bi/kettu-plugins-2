@@ -117,8 +117,8 @@ export default {
         // Stop and clean up sounds
         if (startupTimeout) clearTimeout(startupTimeout);
         if (pingTimeout) clearTimeout(pingTimeout);
-        DCDSoundManager.stop(STARTUP_SOUND_ID);
-        DCDSoundManager.stop(PING_SOUND_ID);
+        if (startupPrepared) DCDSoundManager.stop(STARTUP_SOUND_ID);
+        if (pingPrepared) DCDSoundManager.stop(PING_SOUND_ID);
         startupPrepared = false;
         pingPrepared = false;
         for (const x of patches) x();
