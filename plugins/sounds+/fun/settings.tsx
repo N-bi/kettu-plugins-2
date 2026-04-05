@@ -8,7 +8,6 @@ import { Forms } from "@vendetta/ui/components";
 const { ScrollView, View, Text, TextInput, TouchableOpacity } = RN;
 const { FormRow, FormSwitchRow } = Forms;
 
-// ── Defaults ───────────────────────────────────────────────────────────────
 storage.StartupSoundEnabled ??= true;
 storage.PingSoundEnabled    ??= true;
 storage.StartupVolume       ??= 1.0;
