@@ -7,7 +7,7 @@
             "id": "1410396006725713982"
         }
     ],
-    "main": "fun/index.ts",
+    "main": "fun/main.ts",
     "vendetta": {
         "icon": "ic_badge"
     }
