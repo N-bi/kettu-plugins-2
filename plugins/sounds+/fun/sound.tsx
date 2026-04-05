@@ -102,15 +102,9 @@ export default {
                 const { FluxDispatcher, UserStore } = require("@vendetta/metro/common");
 
                 const handler = (event) => {
-                    if (!event?.message) return;
-                    const currentUser = UserStore?.getCurrentUser?.();
-                    if (currentUser && event.message.author?.id === currentUser.id) return;
-                    const isDM = !event.message.guild_id;
-                    const isMention = event.message.mentions?.some(m => m.id === currentUser?.id);
-                    if (!isDM && !isMention) return;
-                    if (pingPrepared) playPingSound();
-                };
-
+    if (!event?.message) return;
+    if (pingPrepared) playPingSound();
+};
                 FluxDispatcher.subscribe("MESSAGE_CREATE", handler);
                 patches.push(() => FluxDispatcher.unsubscribe("MESSAGE_CREATE", handler));
             } catch (e) {
