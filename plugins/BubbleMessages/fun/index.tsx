@@ -1,38 +1,15 @@
 import { before } from "@vendetta/patcher";
 import { React, ReactNative } from "@vendetta/metro/common";
-import { findByName, findByProps } from "@vendetta/metro";
+import { findByProps } from "@vendetta/metro";
 import { storage } from "@vendetta/plugin";
 import settings from "./settings.js";
 
-// ── Defaults ───────────────────────────────────────────────────────────────
 storage.BubbleEnabled    ??= true;
-storage.MyBubbleColor    ??= "#5865F220";
-storage.OtherBubbleColor ??= "#FFFFFF10";
+storage.MyBubbleColor    ??= "#5865F2";
+storage.OtherBubbleColor ??= "#FFFFFF";
 storage.BubbleRadius     ??= 12;
 
 let patches = [];
-
-function hexToRgba(hex: string, fallback: string): string {
-    try {
-        // Support #RRGGBB and #RRGGBBAA
-        const clean = hex.replace("#", "");
-        if (clean.length === 6) {
-            const r = parseInt(clean.slice(0, 2), 16);
-            const g = parseInt(clean.slice(2, 4), 16);
-            const b = parseInt(clean.slice(4, 6), 16);
-            return `rgba(${r},${g},${b},0.15)`;
-        } else if (clean.length === 8) {
-            const r = parseInt(clean.slice(0, 2), 16);
-            const g = parseInt(clean.slice(2, 4), 16);
-            const b = parseInt(clean.slice(4, 6), 16);
-            const a = parseInt(clean.slice(6, 8), 16) / 255;
-            return `rgba(${r},${g},${b},${a.toFixed(2)})`;
-        }
-        return fallback;
-    } catch {
-        return fallback;
-    }
-}
 
 export default {
     onLoad: () => {
@@ -40,69 +17,88 @@ export default {
 
         try {
             const UserStore = findByProps("getCurrentUser");
-            const MessageRecord = findByName("MessageRecord", false);
 
-            // Patch the message component
-            const ChatMessage = findByName("ChatMessage", false)
-                ?? findByProps("renderMessage")
-                ?? findByName("Message", false);
+            // Try multiple possible component names
+            const candidates = [
+                findByProps("renderMessage", "renderSystemMessage"),
+                findByProps("getMessageGroupProps"),
+                findByProps("renderMessageContent"),
+                findByProps("ChannelMessage"),
+                findByProps("InboxMessage"),
+            ].filter(Boolean);
 
-            if (!ChatMessage) {
-                console.log("[ChatBubbles] Could not find message component");
-                return;
-            }
+            console.log("[ChatBubbles] Found candidates:", candidates.length);
 
-            const target = ChatMessage.default ?? ChatMessage;
+            for (const candidate of candidates) {
+                // Find any render-like function we can patch
+                const keys = Object.keys(candidate).filter(k =>
+                    typeof candidate[k] === "function" &&
+                    (k.includes("render") || k.includes("Message") || k.includes("message"))
+                );
 
-            patches.push(
-                before("render", target.prototype ?? target, (args) => {
-                    // nothing to patch here, we patch the output
-                }),
-            );
+                for (const key of keys) {
+                    try {
+                        patches.push(
+                            before(key, candidate, (args) => {
+                                // args[0] is usually props
+                                const props = args[0];
+                                if (!props?.message) return;
 
-            // Better approach: patch the message container view
-            const { View } = ReactNative;
+                                const currentUser = UserStore?.getCurrentUser?.();
+                                const isMe = props.message?.author?.id === currentUser?.id;
+                                const color = isMe
+                                    ? storage.MyBubbleColor + "33"
+                                    : storage.OtherBubbleColor + "22";
+                                const radius = storage.BubbleRadius ?? 12;
 
-            const MessageComponent = findByProps("MessagesWrapperConnected")
-                ?? findByProps("renderMessageContent");
-
-            // Patch at the row level
-            const ChatMessageWrapper = findByName("ChatMessageWrapper", false)
-                ?? findByName("BaseMessage", false)
-                ?? findByProps("renderSystemMessage");
-
-            if (ChatMessageWrapper) {
-                const comp = ChatMessageWrapper.default ?? ChatMessageWrapper;
-                if (comp?.prototype?.render) {
-                    patches.push(
-                        before("render", comp.prototype, function(args) {
-                            const currentUser = UserStore?.getCurrentUser?.();
-                            const isMe = this?.props?.message?.author?.id === currentUser?.id;
-                            const color = isMe
-                                ? (storage.MyBubbleColor || "#5865F220")
-                                : (storage.OtherBubbleColor || "#FFFFFF10");
-                            const radius = storage.BubbleRadius ?? 12;
-
-                            const origRender = comp.prototype.render.bind(this);
-                            const result = origRender();
-                            if (!result) return;
-
-                            result.props = result.props ?? {};
-                            result.props.style = [
-                                result.props.style,
-                                {
+                                props.__bubbleStyle = {
                                     backgroundColor: color,
                                     borderRadius: radius,
-                                    marginHorizontal: 8,
+                                    marginHorizontal: 4,
                                     marginVertical: 1,
-                                    paddingHorizontal: 8,
-                                    paddingVertical: 4,
-                                }
-                            ];
-                        })
-                    );
+                                    paddingHorizontal: 6,
+                                    paddingVertical: 2,
+                                };
+                            })
+                        );
+                        console.log("[ChatBubbles] Patched:", key);
+                    } catch (e) {}
                 }
             }
+
+            // Fallback: patch View renders that contain message data
+            const { General } = require("@vendetta/ui/components");
+            patches.push(
+                before("render", General.View, (args) => {
+                    const [props] = args;
+                    if (!props) return;
+
+                    // Look for message content containers
+                    const hasMessageContent =
+                        props?.accessibilityLabel?.includes?.("Message") ||
+                        props?.["data-message-id"] ||
+                        props?.messageId;
+
+                    if (!hasMessageContent) return;
+
+                    const currentUser = UserStore?.getCurrentUser?.();
+                    const authorId = props?.authorId ?? props?.message?.author?.id;
+                    const isMe = authorId === currentUser?.id;
+                    const color = isMe
+                        ? storage.MyBubbleColor + "33"
+                        : storage.OtherBubbleColor + "22";
+
+                    props.style = [
+                        props.style,
+                        {
+                            backgroundColor: color,
+                            borderRadius: storage.BubbleRadius ?? 12,
+                            marginHorizontal: 4,
+                            marginVertical: 1,
+                        }
+                    ];
+                })
+            );
 
         } catch (e) {
             console.log("[ChatBubbles] Error:", e);
