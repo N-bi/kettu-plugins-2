@@ -1,1 +1,14 @@
-
+{
+    "name": "Stardrift",
+    "description": "Falling stars and drifting leaves on your Discord screen",
+    "authors": [
+        {
+            "name": "xc_aux/nabi",
+            "id": "1410396006725713982"
+        }
+    ],
+    "main": "src/index.tsx",
+    "vendetta": {
+        "icon": "ic_star"
+    }
+}
