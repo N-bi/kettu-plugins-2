@@ -99,9 +99,7 @@ export default {
             });
 
             try {
-                const FluxDispatcher = (ReactNative as any).FluxDispatcher
-                    ?? require("@vendetta/metro/common").FluxDispatcher;
-                const UserStore = require("@vendetta/metro/common").UserStore;
+                const { FluxDispatcher, UserStore } = require("@vendetta/metro/common");
 
                 const handler = (event) => {
                     if (!event?.message) return;
