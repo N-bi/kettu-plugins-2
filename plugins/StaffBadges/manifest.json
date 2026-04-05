@@ -1,1 +1,14 @@
-
+{
+    "name": "RoleBadges",
+    "description": "Shows owner, admin, staff, mod and more badges next to usernames in chat and profiles",
+    "authors": [
+        {
+            "name": "xc_aux/nabi",
+            "id": "1410396006725713982"
+        }
+    ],
+    "main": "fun/main.ts",
+    "vendetta": {
+        "icon": "ic_badge"
+    }
+}
