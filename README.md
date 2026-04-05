@@ -6,4 +6,4 @@ paste the link into plugins section of Kettu/Rain
 https://N-bi.github.io/kettu_plugins-2/LetItFall
 
 for version 2
-https://N-bi.github.io/kettu_plugins-2/LetItFallv2
+https://N-bi.github.io/kettu_plugins-2/LetItFall2
