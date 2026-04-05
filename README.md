@@ -1,7 +1,5 @@
-# Vendetta Plugins Template
-This repo contains a template for creating [Vendetta](https://github.com/vendetta-mod/Vendetta) plugins.
+# Kettu/Rain plugins made by nabi (xc_aux)
+contains plugins made by me based on other plugins or my own ideas
 
 # How to install?
-Paste a plugin URL into the Plugins page of Vendetta, following a basic format of:
-
-https://`YOUR_GITHUB_USERNAME`.github.io/`REPO_NAME`/`PLUGIN_NAME`
+paste the link into plugins section of Kettu/Rain
