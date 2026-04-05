@@ -5,7 +5,6 @@ import settings from "./settings.js";
 
 const { DCDSoundManager } = ReactNative.NativeModules;
 
-// ── Default URLs ───────────────────────────────────────────────────────────
 const DEFAULT_STARTUP_URL = "https://raw.githubusercontent.com/N-bi/kettu-plugins-2/master/plugins/sounds%2B/m-e-o-w.mp3";
 const DEFAULT_PING_URL    = "https://raw.githubusercontent.com/N-bi/kettu-plugins-2/master/plugins/sounds%2B/discord_ping_sound_effect.mp3";
 
@@ -14,7 +13,6 @@ const PING_SOUND_ID    = 6972;
 
 let patches = [];
 
-// ── Sound state ────────────────────────────────────────────────────────────
 let startupPlaying = false;
 let startupTimeout = null;
 let startupDuration = -1;
@@ -42,7 +40,6 @@ function getVolume(key) {
     return typeof v === "number" ? Math.min(1, Math.max(0, v)) : 1.0;
 }
 
-// ── Prepare + play ─────────────────────────────────────────────────────────
 function prepareSound(url, soundId) {
     return new Promise((resolve) => {
         DCDSoundManager.prepare(url, "music", soundId, (error, sound) => {
@@ -83,7 +80,6 @@ async function playPingSound() {
 
 export default {
     onLoad: () => {
-        // ── Startup sound ──────────────────────────────────────────────────
         if (storage.StartupSoundEnabled !== false && !startupPrepared) {
             prepareSound(getStartupURL(), STARTUP_SOUND_ID).then((sound: any) => {
                 startupPrepared = true;
@@ -92,7 +88,6 @@ export default {
             });
         }
 
-        // ── Ping sound ─────────────────────────────────────────────────────
         if (storage.PingSoundEnabled !== false && !pingPrepared) {
             prepareSound(getPingURL(), PING_SOUND_ID).then((sound: any) => {
                 pingPrepared = true;
@@ -121,7 +116,6 @@ export default {
     },
 
     onUnload: () => {
-        // Stop and clean up sounds
         if (startupTimeout) clearTimeout(startupTimeout);
         if (pingTimeout) clearTimeout(pingTimeout);
         if (startupPrepared) DCDSoundManager.stop(STARTUP_SOUND_ID);
