@@ -20,7 +20,6 @@
 --transition: 0.3s ease;
 }
 
-
 /* light theme */
 [data-theme="light"] {
 --bg: #f4f0eb;
@@ -31,10 +30,8 @@
 --muted: #888;
 }
 
-
 /* global reset garbage */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 
 /* body sytle, its very shitty tbh ? */
 body {
@@ -52,7 +49,6 @@ position: relative;
 overflow-x: hidden;
 }
 
-
 /* bg canvas */
 #bg-canvas {
 position: fixed;
@@ -61,7 +57,6 @@ width: 100%; height: 100%;
 pointer-events: none;
 z-index: 0;
 }
-
 
 /* content wrapper */
 .content {
@@ -73,7 +68,6 @@ display: flex;
 flex-direction: column;
 align-items: center;
 }
-
 
 /* toggle button style or theme whatever */
 .theme-toggle {
@@ -96,7 +90,6 @@ align-items: center;
 gap: 6px;
 }
 
-
 /* header */
 .header { text-align: center; margin-bottom: 24px; }
 .header h1 {
@@ -107,7 +100,6 @@ margin-bottom: 8px; display: flex;
 align-items: center; justify-content: center; gap: 10px;
 }
 .header p { font-size: 1.5rem; color: var(--muted); }
-
 
 /* how to box very cool one :3 */
 .how-to {
@@ -124,7 +116,6 @@ margin-bottom: 24px;
 .how-to ul li .check { color: var(--green); }
 .how-to ul li .no { color: var(--red); }
 
-
 /* plugin box */
 .card {
 background: var(--surface);
@@ -139,7 +130,6 @@ transition: background var(--transition), border var(--transition), transform 0.
 .card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; }
 .card p { font-size: 1.2rem; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
 
-
 /* install button style :3 */
 .install-btn {
 background: var(--blue);
@@ -151,69 +141,106 @@ border: none; cursor: pointer; transition: 0.2s;
 }
 .install-btn.copied { background: var(--green); }
 
-
 /* footer style */
 footer { margin-top: 36px; font-size: 1rem; color: var(--muted); text-align: center; }
 #fun-fact { opacity: 1; transition: opacity 0.8s ease; }
 #fun-fact.fade { opacity: 0; }
 
-
-/* icons ;p */
-.social-icon { width: 24px; height: 24px; object-fit: contain; }
+/* social style section */
+.social-section { 
+    margin-top: 24px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 12px; 
+}
+.social-links { 
+    display: flex; 
+    gap: 10px; 
+    align-items: center; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+}
+.social-ico, .social-pill {
+    height: 44px; 
+    padding: 0 16px; 
+    border-radius: 999px;
+    background: var(--surface); 
+    border: 1px solid var(--border);
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    transition: all 0.2s;
+    text-decoration: none; 
+    color: var(--text);
+    font-size: 1.1rem;
+}
+.social-ico:hover, .social-pill:hover { 
+    border-color: var(--text); 
+    transform: translateY(-2px);
+}
+.social-icon { width: 20px; height: 20px; object-fit: contain; }
 </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
 <button class="theme-toggle" onclick="toggletheme()" id="themebtn">☀️ light</button>
+
 <div class="content">
-<div class="header">
-<h1><img src="https://raw.githubusercontent.com/n-bi/kettu-plugins-2/refs/heads/gh-pages/chara.png" style="width:64px;height:64px;" /> kettu/rain plugins</h1>
-<p>by xc_aux / nabi</p>
-</div>
-<div class="how-to">
-<h3>how to install</h3>
-<ul>
-<li><span class="check">✓</span> click copy link on the plugin you want</li>
-<li><span class="check">✓</span> open kettu / rain / revenge on your device</li>
-<li><span class="check">✓</span> go to settings → plugins and press +</li>
-<li><span class="check">✓</span> paste the link and confirm</li>
-<li><span class="no">✗</span> rain currently does not allow u to add custom plugins</li>
-</ul>
-</div>
-<div class="card">
-<h2>🍂 let it fall</h2>
-<p>falling stars, leaves, rain, sun and seasonal effects on your discord screen.</p>
-<button class="install-btn" onclick="copy(this, 'https://n-bi.github.io/kettu-plugins-2/letitfall2')">copy install link</button>
-</div>
-<div class="card">
-<h2>🔊 sound+</h2>
-<p>play a custom sound on discord open and on ping.</p>
-<button class="install-btn" onclick="copy(this, 'https://n-bi.github.io/kettu-plugins-2/sounds%2b')">copy install link</button>
-</div>
-<footer>
-<span id="fun-fact">loading...</span>
-</footer>
-</div>
-    <div class="social-section">
-        <a href="https://github.com/n-bi" target="_blank" class="social-ico" style="width:44px; padding:0; justify-content:center;">
-            <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" class="social-icon" style="filter:invert(1);" />
-        </a>
-        <div class="social-links">
-            <a href="https://discord.gg/9y5NaU9tr" target="_blank" class="social-ico">
-                <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
-                <span>kettu/rain</span>
-            </a>
-            <a href="https://discord.gg/revenge-1205207689832038522" target="ico" class="social-pill">
-                <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
-                <span>revenge</span>
-            </a>
-            <a href="https://discord.com/users/1410396006725713982" target="_blank" class="social-ico">
-                <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
-                <span>nabi</span>
-            </a>
-        </div>
+    <div class="header">
+        <h1><img src="https://raw.githubusercontent.com/n-bi/kettu-plugins-2/refs/heads/gh-pages/chara.png" style="width:64px;height:64px;" /> kettu/rain plugins</h1>
+        <p>by xc_aux / nabi</p>
     </div>
-  
+
+    <div class="how-to">
+        <h3>how to install</h3>
+        <ul>
+            <li><span class="check">✓</span> click copy link on the plugin you want</li>
+            <li><span class="check">✓</span> open kettu / rain / revenge on your device</li>
+            <li><span class="check">✓</span> go to settings → plugins and press +</li>
+            <li><span class="check">✓</span> paste the link and add, then restard ur application</li>
+            <li><span class="no">✗</span> rain currently does not allow u to add custom plugins</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>🍂 let it fall</h2>
+        <p>falling stars, leaves, rain, sun and seasonal effects on your discord screen.</p>
+        <button class="install-btn" onclick="copy(this, 'https://n-bi.github.io/kettu-plugins-2/letitfall2')">copy install link</button>
+    </div>
+
+    <div class="card">
+        <h2>🔊 sound+</h2>
+        <p>play a custom sound on discord open and on ping.</p>
+        <button class="install-btn" onclick="copy(this, 'https://n-bi.github.io/kettu-plugins-2/sounds%2b')">copy install link</button>
+    </div>
+
+    <footer>
+        <span id="fun-fact">loading...</span>
+        <div class="social-section">
+            <!-- github info -->
+            <a href="https://github.com/n-bi" target="_blank" class="social-ico" style="width:44px; padding:0; justify-content:center;">
+                <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" class="social-icon" style="filter:invert(1);" />
+            </a>
+            <!-- discord info  -->
+            <div class="social-links">
+                <a href="https://discord.gg/9y5NaU9tr" target="_blank" class="social-ico">
+                    <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
+                    <span>kettu/rain</span>
+                </a>
+                <a href="https://discord.gg/revenge-1205207689832038522" target="_blank" class="social-pill">
+                    <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
+                    <span>revenge</span>
+                </a>
+                <a href="https://discord.com/users/1410396006725713982" target="_blank" class="social-ico">
+                    <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
+                    <span>nabi</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+</div>
+
 <script>
 // changing the themes wiwiwiwiwiwi
 function toggletheme(){
@@ -222,7 +249,6 @@ const isdark=html.getAttribute('data-theme')==='dark';
 html.setAttribute('data-theme',isdark?'light':'dark');
 document.getElementById('themebtn').textContent=isdark?'🌙 dark':'☀️ light';
 }
-
 
 // handles the copying logic, very coolie
 function copy(btn,url){
@@ -235,7 +261,6 @@ btn.classList.remove('copied');
 },2000);
 });
 }
-
 
 // fun fact words, pretty much the easiest function of all
 const facts=[
@@ -250,7 +275,6 @@ const facts=[
 let factindex=Math.floor(Math.random()*facts.length);
 const factel=document.getElementById('fun-fact');
 
-
 // this handle changing the function for fun fact
 function nextfact(){
 factel.classList.add('fade');
@@ -263,13 +287,11 @@ factel.classList.remove('fade');
 factel.textContent=facts[factindex];
 setInterval(nextfact,7000);
 
-
 // canvas info ;b
 const canvas=document.getElementById('bg-canvas');
 const ctx=canvas.getContext('2d');
 
-
-// this is painful, DO NOT TOUCH IT, it handle resizing the window, its fragile af
+// resize logic
 function resize(){
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
@@ -277,8 +299,7 @@ canvas.height=window.innerHeight;
 resize();
 window.addEventListener('resize',()=>{resize();initparticles();});
 
-
-// seasonal cycle, it picks from the garbage emoji list i made, very coolie tho!
+// seasonal cycle
 function getseason(){
 const now=new Date();
 const m=now.getMonth()+1;
@@ -290,7 +311,6 @@ if(m===6||m===7||m===8)return 'sun';
 if(m===1||m===2)return 'snow';
 return 'leaves';
 }
-
 
 // emoji list
 const season_emojis={
@@ -304,7 +324,6 @@ leaves:['🍂','🍁','🍃'],
 const season=getseason();
 const emojis=season_emojis[season];
 let particles=[];
-
 
 // particle generator
 function spawnparticle(anywhere=false){
@@ -324,16 +343,14 @@ tick:Math.random()*1000,
 };
 }
 
-
-// particle starter (important)
+// particle starter
 function initparticles(){
 particles=[];
 const count=Math.min(Math.floor((canvas.width*canvas.height)/22000),40);
 for(let i=0;i<count;i++)particles.push(spawnparticle(true));
 }
 
-
-// loop for the animation pretty much neat
+// animation loop
 function drawparticles(){
 ctx.clearRect(0, 0, canvas.width, canvas.height);
 particles.forEach(p=>{
@@ -352,7 +369,6 @@ ctx.restore();
 });
 requestAnimationFrame(drawparticles);
 }
-
 
 // start
 initparticles();
