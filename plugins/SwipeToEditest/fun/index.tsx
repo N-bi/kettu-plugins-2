@@ -1,22 +1,13 @@
 // V2
 import { findByProps } from "@vendetta/metro";
-import { after } from "@vendetta/patcher";
 
-let patches = [];
+onLoad: () => {
+  const m1 = findByProps("swipeToEditIconUrl");
+  console.log("swipeToEditIconUrl module:", m1);
+  
+  const m2 = findByProps("swipe_edit_undo");
+  console.log("swipe_edit_undo module:", m2);
 
-export default {
-  onLoad: () => {
-    const SwipeModule = findByProps("useIsMessageSwipeActionsEnabled");
-
-    if (SwipeModule) {
-      patches.push(
-        after("useIsMessageSwipeActionsEnabled", SwipeModule, () => true)
-      );
-    }
-  },
-
-  onUnload: () => {
-    for (const p of patches) p();
-    patches = [];
-  },
-};
+  const m3 = findByProps("canEditMessage");
+  console.log("canEditMessage module:", m3);
+}
