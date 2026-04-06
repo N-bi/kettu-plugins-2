@@ -1,1 +1,1 @@
-(function(){"use strict"})();
+(function(o,n){"use strict";var e={onLoad:function(){const d=n.findByProps("swipeToEditIconUrl");console.log("swipeToEditIconUrl module:",d);const i=n.findByProps("swipe_edit_undo");console.log("swipe_edit_undo module:",i);const s=n.findByProps("canEditMessage");console.log("canEditMessage module:",s)},onUnload:function(){}};return o.default=e,Object.defineProperty(o,"__esModule",{value:!0}),o})({},vendetta.metro);
