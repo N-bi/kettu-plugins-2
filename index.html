@@ -94,7 +94,7 @@ gap: 6px;
 .header { text-align: center; margin-bottom: 24px; }
 .header h1 {
 font-family: 'Shadows Into Light', cursive;
-font-size: 2.6rem; font-weight: 400;
+font-size: 2.6rem; font-weight: 800;
 letter-spacing: -1px; line-height: 1;
 margin-bottom: 8px; display: flex;
 align-items: center; justify-content: center; gap: 10px;
@@ -110,7 +110,7 @@ padding: 28px 30px;
 width: 100%;
 margin-bottom: 24px;
 }
-.how-to h3 { font-size: 1.1rem; font-weight: 400; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+.how-to h3 { font-size: 1.1rem; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
 .how-to ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
 .how-to ul li { font-size: 1.25rem; color: var(--text); opacity: 0.75; display: flex; align-items: flex-start; gap: 9px; }
 .how-to ul li .check { color: var(--green); }
@@ -176,6 +176,7 @@ footer { margin-top: 36px; font-size: 1rem; color: var(--muted); text-align: cen
     text-decoration: none; 
     color: var(--text);
     font-size: 1.1rem;
+    font-family: 'Shadows Into Light', cursive;
 }
 .social-ico:hover, .social-pill:hover { 
     border-color: var(--text); 
@@ -183,6 +184,8 @@ footer { margin-top: 36px; font-size: 1rem; color: var(--muted); text-align: cen
     background: var(--surface2);
 }
 .social-icon { width: 20px; height: 20px; object-fit: contain; }
+[data-theme="dark"] .github-icon { filter: invert(1); }
+[data-theme="light"] .github-icon { filter: invert(0); }
 </style>
 </head>
 <body>
@@ -222,7 +225,7 @@ footer { margin-top: 36px; font-size: 1rem; color: var(--muted); text-align: cen
         <span id="fun-fact">loading...</span>
         <div class="social-section">
             <a href="https://github.com/n-bi" target="_blank" class="social-ico" style="width:44px; min-width:44px; padding:0;">
-                <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" class="social-icon" style="filter:invert(1);" />
+                <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" class="social-icon github-icon" />
             </a>
             <div class="social-links">
                 <a href="https://discord.gg/9y5NaU9tr" target="_blank" class="social-ico">
