@@ -253,6 +253,7 @@ html.setAttribute('data-theme',isdark?'light':'dark');
 document.getElementById('themebtn').textContent=isdark?'🌙 dark':'☀️ light';
 }
 
+// function to copy the links :3
 function copy(btn,url){
 navigator.clipboard.writeText(url).then(()=>{
 btn.textContent='✓ copied!';
@@ -264,6 +265,7 @@ btn.classList.remove('copied');
 });
 }
 
+// fun fact list, pretty much the easiest line in this code
 const facts=[
 "fun fact: i'm in your walls ◉⁠‿⁠◉",
 "fun fact: i have color blindness",
@@ -290,6 +292,7 @@ setInterval(nextfact,7000);
 const canvas=document.getElementById('bg-canvas');
 const ctx=canvas.getContext('2d');
 
+// function to resize the window/header (IMPORTANT)
 function resize(){
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
@@ -309,6 +312,7 @@ if(m===1||m===2)return 'snow';
 return 'leaves';
 }
 
+// emoji list based on seasons/events :3
 const season_emojis={
 aprilfool:['🥳','🎉','🎊','🎈'],
 halloween:['🎃','🕸️','🍭','🕯️','🍬'],
@@ -321,6 +325,7 @@ const season=getseason();
 const emojis=season_emojis[season];
 let particles=[];
 
+// function to generate particals
 function spawnparticle(anywhere=false){
 const size=12+Math.random()*14;
 return{
@@ -344,6 +349,7 @@ const count=Math.min(Math.floor((canvas.width*canvas.height)/22000),40);
 for(let i=0;i<count;i++)particles.push(spawnparticle(true));
 }
 
+// function to draw particals on screen
 function drawparticles(){
 ctx.clearRect(0, 0, canvas.width, canvas.height);
 particles.forEach(p=>{
@@ -363,6 +369,7 @@ ctx.restore();
 requestAnimationFrame(drawparticles);
 }
 
+// start
 initparticles();
 drawparticles();
 </script>
