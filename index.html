@@ -216,25 +216,25 @@ kettu/rain plugins
 <span id="fun-fact">loading...</span>
 <div style="margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 12px;">
 <a href="https://github.com/n-bi" target="_blank" style="text-decoration:none;">
-<div style="width:44px;height:44px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;transition:border-color 0.2s;" onmouseover="this.style.bordercolor='var(--text)'" onmouseout="this.style.bordercolor='var(--border)'">
+<div style="width:44px;height:44px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--text)'" onmouseout="this.style.borderColor='var(--border)'">
 <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" class="social-icon" style="filter:invert(1);" />
 </div>
 </a>
 <div style="display:flex;gap:10px;align-items:center;">
 <a href="https://discord.gg/6cn7wka8gp" target="_blank" style="text-decoration:none;">
-<div style="height:44px;padding:0 16px;border-radius:999px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:8px;transition:border-color 0.2s;white-space:nowrap;" onmouseover="this.style.bordercolor='var(--text)'" onmouseout="this.style.bordercolor='var(--border)'">
+<div style="height:44px;padding:0 16px;border-radius:999px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:8px;transition:border-color 0.2s;white-space:nowrap;" onmouseover="this.style.borderColor='var(--text)'" onmouseout="this.style.borderColor='var(--border)'">
 <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
 <span style="font-family:'indie flower',cursive;font-size:1rem;color:var(--text);">kettu/rain</span>
 </div>
 </a>
 <a href="https://discord.gg/revenge-1205207689832038522" target="_blank" style="text-decoration:none;">
-<div style="height:44px;padding:0 16px;border-radius:999px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:8px;transition:border-color 0.2s;white-space:nowrap;" onmouseover="this.style.bordercolor='var(--text)'" onmouseout="this.style.bordercolor='var(--border)'">
+<div style="height:44px;padding:0 16px;border-radius:999px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:8px;transition:border-color 0.2s;white-space:nowrap;" onmouseover="this.style.borderColor='var(--text)'" onmouseout="this.style.borderColor='var(--border)'">
 <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
 <span style="font-family:'indie flower',cursive;font-size:1rem;color:var(--text);">revenge</span>
 </div>
 </a>
 <a href="https://discord.com/users/1410396006725713982" target="_blank" style="text-decoration:none;">
-<div style="height:44px;padding:0 16px;border-radius:999px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:8px;transition:border-color 0.2s;white-space:nowrap;" onmouseover="this.style.bordercolor='var(--text)'" onmouseout="this.style.bordercolor='var(--border)'">
+<div style="height:44px;padding:0 16px;border-radius:999px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:8px;transition:border-color 0.2s;white-space:nowrap;" onmouseover="this.style.borderColor='var(--text)'" onmouseout="this.style.borderColor='var(--border)'">
 <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
 <span style="font-family:'indie flower',cursive;font-size:1rem;color:var(--text);">nabi</span>
 </div>
@@ -247,20 +247,20 @@ kettu/rain plugins
 
 <script>
 function toggletheme(){
-const html=document.documentelement;
-const isdark=html.getattribute('data-theme')==='dark';
-html.setattribute('data-theme',isdark?'light':'dark');
-document.getelementbyid('themebtn').textcontent=isdark?'🌙 dark':'☀️ light';
+const html=document.documentElement;
+const isdark=html.getAttribute('data-theme')==='dark';
+html.setAttribute('data-theme',isdark?'light':'dark');
+document.getElementById('themebtn').textContent=isdark?'🌙 dark':'☀️ light';
 }
 
 
 function copy(btn,url){
-navigator.clipboard.writetext(url).then(()=>{
-btn.textcontent='✓ copied!';
-btn.classlist.add('copied');
-settimeout(()=>{
-btn.textcontent='copy install link';
-btn.classlist.remove('copied');
+navigator.clipboard.writeText(url).then(()=>{
+btn.textContent='✓ copied!';
+btn.classList.add('copied');
+setTimeout(()=>{
+btn.textContent='copy install link';
+btn.classList.remove('copied');
 },2000);
 });
 }
@@ -276,32 +276,32 @@ const facts=[
 "fun fact: wagoo wagoo!",
 "fun fact: we do not like when u ask a question in #help",
 ];
-let factindex=math.floor(math.random()*facts.length);
-const factel=document.getelementbyid('fun-fact');
+let factindex=Math.floor(Math.random()*facts.length);
+const factel=document.getElementById('fun-fact');
 function nextfact(){
-factel.classlist.add('fade');
-settimeout(()=>{
+factel.classList.add('fade');
+setTimeout(()=>{
 factindex=(factindex+1)%facts.length;
-factel.textcontent=facts[factindex];
-factel.classlist.remove('fade');
+factel.textContent=facts[factindex];
+factel.classList.remove('fade');
 },800);
 }
-factel.textcontent=facts[factindex];
-setinterval(nextfact,7000);
+factel.textContent=facts[factindex];
+setInterval(nextfact,7000);
 
 
-const canvas=document.getelementbyid('bg-canvas');
-const ctx=canvas.getcontext('2d');
+const canvas=document.getElementById('bg-canvas');
+const ctx=canvas.getContext('2d');
 function resize(){
-canvas.width=window.innerwidth;
-canvas.height=window.innerheight;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 }
 resize();
-window.addeventlistener('resize',()=>{resize();initparticles();});
+window.addEventListener('resize',()=>{resize();initparticles();});
 function getseason(){
-const now=new date();
-const m=now.getmonth()+1;
-const d=now.getdate();
+const now=new Date();
+const m=now.getMonth()+1;
+const d=now.getDate();
 if(m===4&&d===1)return 'aprilfool';
 if(m===10&&d>=25)return 'halloween';
 if(m===12&&d>=20)return 'christmas';
@@ -321,46 +321,46 @@ const season=getseason();
 const emojis=season_emojis[season];
 let particles=[];
 function spawnparticle(anywhere=false){
-const size=12+math.random()*14;
+const size=12+Math.random()*14;
 return{
-x:math.random()*canvas.width,
-y:anywhere?math.random()*canvas.height:-size-math.random()*100,
+x:Math.random()*canvas.width,
+y:anywhere?Math.random()*canvas.height:-size-Math.random()*100,
 size,
-emoji:emojis[math.floor(math.random()*emojis.length)],
-speed:0.4+math.random()*0.7,
-swayamp:20+math.random()*40,
-swayspeed:0.003+math.random()*0.004,
-swayoffset:math.random()*math.pi*2,
-rotation:math.random()*360,
-rotspeed:(math.random()-0.5)*0.8,
-opacity:0.12+math.random()*0.18,
-tick:math.random()*1000,
+emoji:emojis[Math.floor(Math.random()*emojis.length)],
+speed:0.4+Math.random()*0.7,
+swayamp:20+Math.random()*40,
+swayspeed:0.003+Math.random()*0.004,
+swayoffset:Math.random()*Math.PI*2,
+rotation:Math.random()*360,
+rotspeed:(Math.random()-0.5)*0.8,
+opacity:0.12+Math.random()*0.18,
+tick:Math.random()*1000,
 };
 }
 function initparticles(){
 particles=[];
-const count=math.min(math.floor((canvas.width*canvas.height)/22000),40);
+const count=Math.min(Math.floor((canvas.width*canvas.height)/22000),40);
 for(let i=0;i<count;i++)particles.push(spawnparticle(true));
 }
 function drawparticles(){
-ctx.clearrect(0,0,canvas.width,canvas.height);
-particles.foreach(p=>{
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+particles.forEach(p=>{
 p.tick+=1;
 p.y+=p.speed;
-p.x+=math.sin(p.tick*p.swayspeed+p.swayoffset)*0.5;
+p.x+=Math.sin(p.tick*p.swayspeed+p.swayoffset)*0.5;
 p.rotation+=p.rotspeed;
-if(p.y>canvas.height+p.size)object.assign(p,spawnparticle(false));
+if(p.y>canvas.height+p.size)Object.assign(p,spawnparticle(false));
 ctx.save();
-ctx.globalalpha=p.opacity;
+ctx.globalAlpha=p.opacity;
 ctx.translate(p.x,p.y);
-ctx.rotate((p.rotation*math.pi)/180);
+ctx.rotate((p.rotation*Math.PI)/180);
 ctx.font=`${p.size}px serif`;
-ctx.textalign='center';
-ctx.textbaseline='middle';
-ctx.filltext(p.emoji,0,0);
+ctx.textAlign='center';
+ctx.textBaseline='middle';
+ctx.fillText(p.emoji,0,0);
 ctx.restore();
 });
-requestanimationframe(drawparticles);
+requestAnimationFrame(drawparticles);
 }
 initparticles();
 drawparticles();
