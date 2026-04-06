@@ -1,3 +1,4 @@
+// V2
 import { findByProps } from "@vendetta/metro";
 import { after } from "@vendetta/patcher";
 
