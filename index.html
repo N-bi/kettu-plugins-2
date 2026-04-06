@@ -6,6 +6,7 @@
 <title>kettu plugins</title>
 <link href="https://fonts.googleapis.com/css2?family=indie+flower&display=swap" rel="stylesheet">
 <style>
+/* root vab shit */
 :root {
 --bg: #0a0a0a;
 --surface: #141414;
@@ -18,6 +19,9 @@
 --blue: #5865f2;
 --transition: 0.3s ease;
 }
+
+
+/* light theme */
 [data-theme="light"] {
 --bg: #f4f0eb;
 --surface: #fffdf9;
@@ -26,7 +30,13 @@
 --text: #1a1a1a;
 --muted: #888;
 }
+
+
+/* global reset garbage */
 * { margin: 0; padding: 0; box-sizing: border-box; }
+
+
+/* body sytle, its very shitty tbh ? */
 body {
 background: var(--bg);
 color: var(--text);
@@ -41,6 +51,9 @@ transition: background var(--transition), color var(--transition);
 position: relative;
 overflow-x: hidden;
 }
+
+
+/* bg canvas */
 #bg-canvas {
 position: fixed;
 top: 0; left: 0;
@@ -48,6 +61,9 @@ width: 100%; height: 100%;
 pointer-events: none;
 z-index: 0;
 }
+
+
+/* content wrapper */
 .content {
 position: relative;
 z-index: 1;
@@ -57,6 +73,9 @@ display: flex;
 flex-direction: column;
 align-items: center;
 }
+
+
+/* toggle button style or theme whatever */
 .theme-toggle {
 position: fixed;
 top: 18px;
@@ -76,27 +95,21 @@ display: flex;
 align-items: center;
 gap: 6px;
 }
-.theme-toggle:hover { color: var(--text); border-color: var(--text); }
-.header {
-text-align: center;
-margin-bottom: 24px;
-}
+
+
+/* header */
+.header { text-align: center; margin-bottom: 24px; }
 .header h1 {
 font-family: 'indie flower', cursive;
 font-size: 2.6rem; font-weight: 800;
-font-weight: 800;
-letter-spacing: -1px;
-line-height: 1;
-margin-bottom: 8px;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 10px;
+letter-spacing: -1px; line-height: 1;
+margin-bottom: 8px; display: flex;
+align-items: center; justify-content: center; gap: 10px;
 }
-.header p {
-font-size: 1.5rem;
-color: var(--muted);
-}
+.header p { font-size: 1.5rem; color: var(--muted); }
+
+
+/* how to box very cool one :3 */
 .how-to {
 background: var(--surface2);
 border: 1px solid var(--border);
@@ -104,27 +117,15 @@ border-radius: 16px;
 padding: 28px 30px;
 width: 100%;
 margin-bottom: 24px;
-transition: background var(--transition), border var(--transition);
 }
-.how-to h3 {
-font-size: 1.1rem;
-font-weight: 700;
-color: var(--muted);
-letter-spacing: 1px;
-text-transform: uppercase;
-margin-bottom: 12px;
-}
+.how-to h3 { font-size: 1.1rem; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
 .how-to ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
-.how-to ul li {
-font-size: 1.25rem;
-color: var(--text);
-opacity: 0.75;
-display: flex;
-align-items: flex-start;
-gap: 9px;
-}
-.how-to ul li .check { color: var(--green); flex-shrink: 0; margin-top: 1px; }
-.how-to ul li .no { color: var(--red); flex-shrink: 0; margin-top: 1px; }
+.how-to ul li { font-size: 1.25rem; color: var(--text); opacity: 0.75; display: flex; align-items: flex-start; gap: 9px; }
+.how-to ul li .check { color: var(--green); }
+.how-to ul li .no { color: var(--red); }
+
+
+/* plugin box */
 .card {
 background: var(--surface);
 border: 1px solid var(--border);
@@ -135,41 +136,30 @@ margin-bottom: 14px;
 transition: background var(--transition), border var(--transition), transform 0.15s;
 }
 .card:hover { transform: translateY(-2px); }
-.card h2 { font-family: 'indie flower', cursive; font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; }
+.card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; }
 .card p { font-size: 1.2rem; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+
+
+/* install button style :3 */
 .install-btn {
 background: var(--blue);
 color: #fff;
 font-family: 'indie flower', cursive;
-font-size: 1.2rem;
-font-weight: 600;
-padding: 8px 16px;
-border-radius: 9px;
-border: none;
-cursor: pointer;
-transition: opacity 0.15s, background 0.2s;
+font-size: 1.2rem; font-weight: 600;
+padding: 8px 16px; border-radius: 9px;
+border: none; cursor: pointer; transition: 0.2s;
 }
-.install-btn:active { opacity: 0.8; }
 .install-btn.copied { background: var(--green); }
-footer {
-margin-top: 36px;
-font-size: 1rem;
-color: var(--muted);
-text-align: center;
-min-height: 20px;
-}
-#fun-fact {
-opacity: 1;
-transition: opacity 0.8s ease;
-}
-#fun-fact.fade {
-opacity: 0;
-}
-.social-icon {
-width: 24px;
-height: 24px;
-object-fit: contain;
-}
+
+
+/* footer style */
+footer { margin-top: 36px; font-size: 1rem; color: var(--muted); text-align: center; }
+#fun-fact { opacity: 1; transition: opacity 0.8s ease; }
+#fun-fact.fade { opacity: 0; }
+
+
+/* icons ;p */
+.social-icon { width: 24px; height: 24px; object-fit: contain; }
 </style>
 </head>
 <body>
@@ -177,14 +167,9 @@ object-fit: contain;
 <button class="theme-toggle" onclick="toggletheme()" id="themebtn">☀️ light</button>
 <div class="content">
 <div class="header">
-<h1>
-<img src="https://raw.githubusercontent.com/n-bi/kettu-plugins-2/refs/heads/gh-pages/chara.png" style="width:64px;height:64px;" />
-kettu/rain plugins
-</h1>
+<h1><img src="https://raw.githubusercontent.com/n-bi/kettu-plugins-2/refs/heads/gh-pages/chara.png" style="width:64px;height:64px;" /> kettu/rain plugins</h1>
 <p>by xc_aux / nabi</p>
 </div>
-
-
 <div class="how-to">
 <h3>how to install</h3>
 <ul>
@@ -192,60 +177,26 @@ kettu/rain plugins
 <li><span class="check">✓</span> open kettu / rain / revenge on your device</li>
 <li><span class="check">✓</span> go to settings → plugins and press +</li>
 <li><span class="check">✓</span> paste the link and confirm</li>
-<li><span class="check">✓</span> restart your app and enjoy!</li>
 <li><span class="no">✗</span> rain currently does not allow u to add custom plugins</li>
 </ul>
 </div>
-
-
 <div class="card">
 <h2>🍂 let it fall</h2>
 <p>falling stars, leaves, rain, sun and seasonal effects on your discord screen.</p>
 <button class="install-btn" onclick="copy(this, 'https://n-bi.github.io/kettu-plugins-2/letitfall2')">copy install link</button>
 </div>
-
-
 <div class="card">
 <h2>🔊 sound+</h2>
 <p>play a custom sound on discord open and on ping.</p>
 <button class="install-btn" onclick="copy(this, 'https://n-bi.github.io/kettu-plugins-2/sounds%2b')">copy install link</button>
 </div>
-
-
 <footer>
 <span id="fun-fact">loading...</span>
-<div style="margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 12px;">
-<a href="https://github.com/n-bi" target="_blank" style="text-decoration:none;">
-<div style="width:44px;height:44px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--text)'" onmouseout="this.style.borderColor='var(--border)'">
-<img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" class="social-icon" style="filter:invert(1);" />
-</div>
-</a>
-<div style="display:flex;gap:10px;align-items:center;">
-<a href="https://discord.gg/6cn7wka8gp" target="_blank" style="text-decoration:none;">
-<div style="height:44px;padding:0 16px;border-radius:999px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:8px;transition:border-color 0.2s;white-space:nowrap;" onmouseover="this.style.borderColor='var(--text)'" onmouseout="this.style.borderColor='var(--border)'">
-<img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
-<span style="font-family:'indie flower',cursive;font-size:1rem;color:var(--text);">kettu/rain</span>
-</div>
-</a>
-<a href="https://discord.gg/revenge-1205207689832038522" target="_blank" style="text-decoration:none;">
-<div style="height:44px;padding:0 16px;border-radius:999px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:8px;transition:border-color 0.2s;white-space:nowrap;" onmouseover="this.style.borderColor='var(--text)'" onmouseout="this.style.borderColor='var(--border)'">
-<img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
-<span style="font-family:'indie flower',cursive;font-size:1rem;color:var(--text);">revenge</span>
-</div>
-</a>
-<a href="https://discord.com/users/1410396006725713982" target="_blank" style="text-decoration:none;">
-<div style="height:44px;padding:0 16px;border-radius:999px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;gap:8px;transition:border-color 0.2s;white-space:nowrap;" onmouseover="this.style.borderColor='var(--text)'" onmouseout="this.style.borderColor='var(--border)'">
-<img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
-<span style="font-family:'indie flower',cursive;font-size:1rem;color:var(--text);">nabi</span>
-</div>
-</a>
-</div>
-</div>
 </footer>
 </div>
 
-
 <script>
+// changing the themes wiwiwiwiwiwi
 function toggletheme(){
 const html=document.documentElement;
 const isdark=html.getAttribute('data-theme')==='dark';
@@ -254,6 +205,7 @@ document.getElementById('themebtn').textContent=isdark?'🌙 dark':'☀️ light
 }
 
 
+// handles the copying logic, very coolie
 function copy(btn,url){
 navigator.clipboard.writeText(url).then(()=>{
 btn.textContent='✓ copied!';
@@ -266,18 +218,21 @@ btn.classList.remove('copied');
 }
 
 
+// fun fact words, pretty much the easiest function of all
 const facts=[
 "fun fact: i'm in your walls ◉⁠‿⁠◉",
 "fun fact: i have color blindness",
 "fun fact: this site was made when i had a broken arm",
 "fun fact: discord is better when u control it.",
-"fun fact: i will maintain more work on my plugins/themes",
 "fun fact: mr balls is the cutest cat ever",
 "fun fact: wagoo wagoo!",
 "fun fact: we do not like when u ask a question in #help",
 ];
 let factindex=Math.floor(Math.random()*facts.length);
 const factel=document.getElementById('fun-fact');
+
+
+// this handle changing the function for fun fact
 function nextfact(){
 factel.classList.add('fade');
 setTimeout(()=>{
@@ -290,14 +245,21 @@ factel.textContent=facts[factindex];
 setInterval(nextfact,7000);
 
 
+// canvas info ;b
 const canvas=document.getElementById('bg-canvas');
 const ctx=canvas.getContext('2d');
+
+
+// this is painful, DO NOT TOUCH IT, it handle resizing the window, its fragile af
 function resize(){
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 }
 resize();
 window.addEventListener('resize',()=>{resize();initparticles();});
+
+
+// seasonal cycle, it picks from the garbage emoji list i made, very coolie tho!
 function getseason(){
 const now=new Date();
 const m=now.getMonth()+1;
@@ -309,6 +271,9 @@ if(m===6||m===7||m===8)return 'sun';
 if(m===1||m===2)return 'snow';
 return 'leaves';
 }
+
+
+// emoji list
 const season_emojis={
 aprilfool:['🥳','🎉','🎊','🎈'],
 halloween:['🎃','🕸️','🍭','🕯️','🍬'],
@@ -320,6 +285,9 @@ leaves:['🍂','🍁','🍃'],
 const season=getseason();
 const emojis=season_emojis[season];
 let particles=[];
+
+
+// particle generator
 function spawnparticle(anywhere=false){
 const size=12+Math.random()*14;
 return{
@@ -328,7 +296,6 @@ y:anywhere?Math.random()*canvas.height:-size-Math.random()*100,
 size,
 emoji:emojis[Math.floor(Math.random()*emojis.length)],
 speed:0.4+Math.random()*0.7,
-swayamp:20+Math.random()*40,
 swayspeed:0.003+Math.random()*0.004,
 swayoffset:Math.random()*Math.PI*2,
 rotation:Math.random()*360,
@@ -337,16 +304,21 @@ opacity:0.12+Math.random()*0.18,
 tick:Math.random()*1000,
 };
 }
+
+
+// particle starter (important)
 function initparticles(){
 particles=[];
 const count=Math.min(Math.floor((canvas.width*canvas.height)/22000),40);
 for(let i=0;i<count;i++)particles.push(spawnparticle(true));
 }
+
+
+// loop for the animation pretty much neat
 function drawparticles(){
 ctx.clearRect(0, 0, canvas.width, canvas.height);
 particles.forEach(p=>{
-p.tick+=1;
-p.y+=p.speed;
+p.tick+=1; p.y+=p.speed;
 p.x+=Math.sin(p.tick*p.swayspeed+p.swayoffset)*0.5;
 p.rotation+=p.rotspeed;
 if(p.y>canvas.height+p.size)Object.assign(p,spawnparticle(false));
@@ -355,13 +327,15 @@ ctx.globalAlpha=p.opacity;
 ctx.translate(p.x,p.y);
 ctx.rotate((p.rotation*Math.PI)/180);
 ctx.font=`${p.size}px serif`;
-ctx.textAlign='center';
-ctx.textBaseline='middle';
+ctx.textAlign='center'; ctx.textBaseline='middle';
 ctx.fillText(p.emoji,0,0);
 ctx.restore();
 });
 requestAnimationFrame(drawparticles);
 }
+
+
+// start
 initparticles();
 drawparticles();
 </script>
