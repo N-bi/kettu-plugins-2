@@ -152,23 +152,25 @@ footer { margin-top: 36px; font-size: 1rem; color: var(--muted); text-align: cen
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    gap: 12px; 
+    gap: 16px; 
 }
 .social-links { 
     display: flex; 
-    gap: 10px; 
+    gap: 12px; 
     align-items: center; 
     flex-wrap: wrap; 
     justify-content: center; 
 }
 .social-ico, .social-pill {
     height: 44px; 
-    padding: 0 16px; 
+    min-width: 110px; /* edited cuz small */
+    padding: 0 18px; 
     border-radius: 999px;
     background: var(--surface); 
     border: 1px solid var(--border);
     display: flex; 
     align-items: center; 
+    justify-content: center; /* edited again to to be centered fuck html*/
     gap: 8px; 
     transition: all 0.2s;
     text-decoration: none; 
@@ -178,6 +180,7 @@ footer { margin-top: 36px; font-size: 1rem; color: var(--muted); text-align: cen
 .social-ico:hover, .social-pill:hover { 
     border-color: var(--text); 
     transform: translateY(-2px);
+    background: var(--surface2);
 }
 .social-icon { width: 20px; height: 20px; object-fit: contain; }
 </style>
@@ -198,7 +201,7 @@ footer { margin-top: 36px; font-size: 1rem; color: var(--muted); text-align: cen
             <li><span class="check">✓</span> click copy link on the plugin you want</li>
             <li><span class="check">✓</span> open kettu / rain / revenge on your device</li>
             <li><span class="check">✓</span> go to settings → plugins and press +</li>
-            <li><span class="check">✓</span> paste the link and add, then restard ur application</li>
+            <li><span class="check">✓</span> paste the link and confirm</li>
             <li><span class="no">✗</span> rain currently does not allow u to add custom plugins</li>
         </ul>
     </div>
@@ -218,17 +221,15 @@ footer { margin-top: 36px; font-size: 1rem; color: var(--muted); text-align: cen
     <footer>
         <span id="fun-fact">loading...</span>
         <div class="social-section">
-            <!-- github info -->
-            <a href="https://github.com/n-bi" target="_blank" class="social-ico" style="width:44px; padding:0; justify-content:center;">
+            <a href="https://github.com/n-bi" target="_blank" class="social-ico" style="width:44px; min-width:44px; padding:0;">
                 <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" class="social-icon" style="filter:invert(1);" />
             </a>
-            <!-- discord info  -->
             <div class="social-links">
                 <a href="https://discord.gg/9y5NaU9tr" target="_blank" class="social-ico">
                     <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
                     <span>kettu/rain</span>
                 </a>
-                <a href="https://discord.gg/revenge-1205207689832038522" target="_blank" class="social-pill">
+                <a href="https://discord.gg/revenge-1205207689832038522" target="_blank" class="social-ico">
                     <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" class="social-icon" />
                     <span>revenge</span>
                 </a>
@@ -242,7 +243,6 @@ footer { margin-top: 36px; font-size: 1rem; color: var(--muted); text-align: cen
 </div>
 
 <script>
-// changing the themes wiwiwiwiwiwi
 function toggletheme(){
 const html=document.documentElement;
 const isdark=html.getAttribute('data-theme')==='dark';
@@ -250,7 +250,6 @@ html.setAttribute('data-theme',isdark?'light':'dark');
 document.getElementById('themebtn').textContent=isdark?'🌙 dark':'☀️ light';
 }
 
-// handles the copying logic, very coolie
 function copy(btn,url){
 navigator.clipboard.writeText(url).then(()=>{
 btn.textContent='✓ copied!';
@@ -262,7 +261,6 @@ btn.classList.remove('copied');
 });
 }
 
-// fun fact words, pretty much the easiest function of all
 const facts=[
 "fun fact: i'm in your walls ◉⁠‿⁠◉",
 "fun fact: i have color blindness",
@@ -275,7 +273,6 @@ const facts=[
 let factindex=Math.floor(Math.random()*facts.length);
 const factel=document.getElementById('fun-fact');
 
-// this handle changing the function for fun fact
 function nextfact(){
 factel.classList.add('fade');
 setTimeout(()=>{
@@ -287,11 +284,9 @@ factel.classList.remove('fade');
 factel.textContent=facts[factindex];
 setInterval(nextfact,7000);
 
-// canvas info ;b
 const canvas=document.getElementById('bg-canvas');
 const ctx=canvas.getContext('2d');
 
-// resize logic
 function resize(){
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
@@ -299,7 +294,6 @@ canvas.height=window.innerHeight;
 resize();
 window.addEventListener('resize',()=>{resize();initparticles();});
 
-// seasonal cycle
 function getseason(){
 const now=new Date();
 const m=now.getMonth()+1;
@@ -312,7 +306,6 @@ if(m===1||m===2)return 'snow';
 return 'leaves';
 }
 
-// emoji list
 const season_emojis={
 aprilfool:['🥳','🎉','🎊','🎈'],
 halloween:['🎃','🕸️','🍭','🕯️','🍬'],
@@ -325,7 +318,6 @@ const season=getseason();
 const emojis=season_emojis[season];
 let particles=[];
 
-// particle generator
 function spawnparticle(anywhere=false){
 const size=12+Math.random()*14;
 return{
@@ -343,14 +335,12 @@ tick:Math.random()*1000,
 };
 }
 
-// particle starter
 function initparticles(){
 particles=[];
 const count=Math.min(Math.floor((canvas.width*canvas.height)/22000),40);
 for(let i=0;i<count;i++)particles.push(spawnparticle(true));
 }
 
-// animation loop
 function drawparticles(){
 ctx.clearRect(0, 0, canvas.width, canvas.height);
 particles.forEach(p=>{
@@ -370,7 +360,6 @@ ctx.restore();
 requestAnimationFrame(drawparticles);
 }
 
-// start
 initparticles();
 drawparticles();
 </script>
