@@ -1,0 +1,14 @@
+{
+  "name": "Swipe To Edit",
+  "description": "Force enables swipe to edit, test",
+  "authors": [
+    {
+      "name": "xc_aux/nabi",
+      "id": "1410396006725713982"
+    }
+  ],
+  "main": "fun/index.tsx",
+  "vendetta": {
+    "icon": "ic_message_edit"
+  }
+}
