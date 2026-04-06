@@ -1,1 +1,1 @@
-(function(n,o,s){"use strict";let t=[];var u={onLoad:function(){const e=o.findByProps("useIsMessageSwipeActionsEnabled");e&&t.push(s.after("useIsMessageSwipeActionsEnabled",e,function(){return!0}))},onUnload:function(){for(const e of t)e();t=[]}};return n.default=u,Object.defineProperty(n,"__esModule",{value:!0}),n})({},vendetta.metro,vendetta.patcher);
+(function(){"use strict"})();
