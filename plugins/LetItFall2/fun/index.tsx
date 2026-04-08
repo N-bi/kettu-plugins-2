@@ -13,8 +13,8 @@ const perfMode = !!storage.snowPerformance;
 const configs = {
     stars:     { emoji: "\u2605", colors: ["#ffffff","#e8f4fd","#aed6f1","#f9e79f"], size: [8,6],   duration: [18000,10000], sway: [10,20], swayDur: [4000,4000], rock: 20 },
     leaves:    { emoji: "🍂",    colors: ["#e8a87c","#d46a2a","#c0392b","#e67e22","#a93226"], size: [14,8], duration: [18000,10000], sway: [25,40], swayDur: [2000,2000], rock: 35 },
-    // changed the rain to stop breaking physics and doing backflips in the air Xddddddddd
-    rain:      { emoji: "|",     colors: ["#74b9ff","#0984e3","#a8d8ea","#ddefff"], size: [12,4],  duration: [1200,800],    sway: [0,1],    swayDur: [8000,4000], rock: 0  },
+    // slowed down slightly, hopefully this shit fixes it
+    rain:      { emoji: "|",     colors: ["#74b9ff","#0984e3","#a8d8ea","#ddefff"], size: [16,6],  duration: [2200,1200],   sway: [0,1],    swayDur: [8000,4000], rock: 0  },
     sun:       { emoji: "☀️",    colors: ["#f9ca24","#f0932b","#ffdd59"],           size: [16,8],  duration: [20000,12000], sway: [15,20], swayDur: [5000,4000], rock: 15 },
     christmas: { emojis: ["❄️","🌀","☃️","🏔️","\u2605"], colors: ["#ffffff","#aed6f1","#e8f4fd"], size: [14,8], duration: [16000,8000], sway: [20,30], swayDur: [3000,2000], rock: 25 },
     halloween: { emojis: ["🎃","🍭","🍬","🕯️","🕸️"], colors: ["#e67e22","#8e44ad","#2c3e50","#f39c12"], size: [16,8], duration: [14000,8000], sway: [20,30], swayDur: [2500,2000], rock: 30 },
@@ -39,7 +39,7 @@ let patches = [];
 const particles = [];
 let ready = false;
 
-// water splash freaky logic
+// water splash freaky logic - made it bigger and more responsive
 const splashes: { id: number; x: number; anim: Animated.Value; opacity: Animated.Value }[] = [];
 let splashId = 0;
 
@@ -53,13 +53,13 @@ function splash(x: number) {
     Animated.parallel([
         Animated.timing(anim, {
             toValue: 1,
-            duration: 200, // and for faster splash cuz the recent one was too freaky
+            duration: 250, // fast splashing
             useNativeDriver: true,
             easing: Easing.out(Easing.quad),
         }),
         Animated.timing(opacity, {
             toValue: 0,
-            duration: 200, // to fade faster
+            duration: 250, 
             useNativeDriver: true,
         }),
     ]).start(() => {
@@ -102,7 +102,8 @@ function makeParticle(index, scatter = false) {
         rot,
         startY,
         opacity: !perfMode ? 0.6 + Math.random() * 0.4 : 1,
-        rotation: Math.random() * 360,
+        // if its rain, rotation MUST be 0 or it looks dumb as hell, literally doing 360 in the air 😭
+        rotation: type === "rain" ? 0 : Math.random() * 360,
         shouldRock: !perfMode && Math.random() > 0.3 && type !== "rain",
         rockSpeed: 1800 + Math.random() * 4000,
         rockDir: Math.random() > 0.5 ? 1 : -1,
@@ -149,7 +150,7 @@ function animateParticle(p) {
         p.y.setValue(-50);
         p.sway.setValue(0);
         Animated.timing(p.y, {
-            toValue: sh, // hitting the bottom edge precisely (IMPROTANNTTTTTTTT)
+            toValue: sh, 
             duration: p.duration,
             useNativeDriver: true
         }).start(({ finished }) => {
@@ -182,7 +183,7 @@ function init() {
     }
 }
 
-// capitalized 'Particle' component to stop react from shitting itself, fuck react
+// capitalized 'Particle' to stop react from shitting itself, fuck react
 const Particle = React.memo(({ p }) => {
     if (!perfMode) {
         const rotDeg = p.rot?.interpolate({
@@ -257,16 +258,16 @@ const SplashLayer = () => {
                     style={{
                         position: "absolute",
                         bottom: 0,
-                        left: s.x - 8,
-                        width: 16,
-                        height: 5,
+                        left: s.x - 12, // edited for more size
+                        width: 24,    // same as up
+                        height: 6,
                         opacity: s.opacity,
                         borderRadius: 3,
                         backgroundColor: "#74b9ff22",
                         borderWidth: 1,
                         borderColor: "#74b9ff99",
                         transform: [
-                            { scaleX: s.anim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 3.5] }) }, // bigger splash spread
+                            { scaleX: s.anim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 5.0] }) }, // bigger splash
                             { scaleY: s.anim.interpolate({ inputRange: [0, 0.3, 1], outputRange: [1, 0.8, 0.2] }) }
                         ],
                     }}
