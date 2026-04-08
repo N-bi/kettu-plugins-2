@@ -7,28 +7,29 @@ import { storage } from "@vendetta/plugin";
 const { View, Animated, Dimensions, Easing } = ReactNative;
 const { width: sw, height: sh } = Dimensions.get("window");
 
-const perfMode = !!storage.SnowPerformance;
+// this ensures reactive performance mode
+const perfMode = !!storage.snowPerformance;
 
 const configs = {
-    stars:     { emoji: "\u2605", colors: ["#FFFFFF","#E8F4FD","#AED6F1","#F9E79F"], size: [8,6],   duration: [18000,10000], sway: [10,20], swayDur: [4000,4000], rock: 20 },
-    leaves:    { emoji: "🍂",    colors: ["#E8A87C","#D46A2A","#C0392B","#E67E22","#A93226"], size: [14,8], duration: [18000,10000], sway: [25,40], swayDur: [2000,2000], rock: 35 },
-    rain:      { emoji: "|",     colors: ["#74B9FF","#0984E3","#A8D8EA","#DDEFFF"], size: [6,2],   duration: [4000,3000],   sway: [2,3],   swayDur: [8000,4000], rock: 0  },
-    sun:       { emoji: "☀️",    colors: ["#F9CA24","#F0932B","#FFDD59"],           size: [16,8],  duration: [20000,12000], sway: [15,20], swayDur: [5000,4000], rock: 15 },
-    christmas: { emojis: ["❄️","🌀","☃️","🏔️","\u2605"], colors: ["#FFFFFF","#AED6F1","#E8F4FD"], size: [14,8], duration: [16000,8000], sway: [20,30], swayDur: [3000,2000], rock: 25 },
-    halloween: { emojis: ["🎃","🍭","🍬","🕯️","🕸️"], colors: ["#E67E22","#8E44AD","#2C3E50","#F39C12"], size: [16,8], duration: [14000,8000], sway: [20,30], swayDur: [2500,2000], rock: 30 },
-    custom:    { colors: ["#FFFFFF"], size: [20,8], duration: [16000,8000], sway: [15,25], swayDur: [3000,2000], rock: 20 },
+    stars:     { emoji: "\u2605", colors: ["#ffffff","#e8f4fd","#aed6f1","#f9e79f"], size: [8,6],   duration: [18000,10000], sway: [10,20], swayDur: [4000,4000], rock: 20 },
+    leaves:    { emoji: "🍂",    colors: ["#e8a87c","#d46a2a","#c0392b","#e67e22","#a93226"], size: [14,8], duration: [18000,10000], sway: [25,40], swayDur: [2000,2000], rock: 35 },
+    rain:      { emoji: "|",     colors: ["#74b9ff","#0984e3","#a8d8ea","#ddefff"], size: [6,2],   duration: [4000,3000],   sway: [2,3],   swayDur: [8000,4000], rock: 0  },
+    sun:       { emoji: "☀️",    colors: ["#f9ca24","#f0932b","#ffdd59"],           size: [16,8],  duration: [20000,12000], sway: [15,20], swayDur: [5000,4000], rock: 15 },
+    christmas: { emojis: ["❄️","🌀","☃️","🏔️","\u2605"], colors: ["#ffffff","#aed6f1","#e8f4fd"], size: [14,8], duration: [16000,8000], sway: [20,30], swayDur: [3000,2000], rock: 25 },
+    halloween: { emojis: ["🎃","🍭","🍬","🕯️","🕸️"], colors: ["#e67e22","#8e44ad","#2c3e50","#f39c12"], size: [16,8], duration: [14000,8000], sway: [20,30], swayDur: [2500,2000], rock: 30 },
+    custom:    { colors: ["#ffffff"], size: [20,8], duration: [16000,8000], sway: [15,25], swayDur: [3000,2000], rock: 20 },
 };
 
 function getPool() {
-    if (storage.ModeChristmas) return Array(45).fill("christmas");
-    if (storage.ModeHalloween) return Array(45).fill("halloween");
-    if (storage.ModeCustom && storage.CustomImageURL) return Array(45).fill("custom");
+    if (storage.modeChristmas) return Array(45).fill("christmas");
+    if (storage.modeHalloween) return Array(45).fill("halloween");
+    if (storage.modeCustom && storage.customImageURL) return Array(45).fill("custom");
 
     const pool = [];
-    if (storage.ParticleStars  !== false) for (let i = 0; i < 3; i++) pool.push("stars");
-    if (storage.ParticleLeaves !== false) for (let i = 0; i < 2; i++) pool.push("leaves");
-    if (storage.ParticleRain   === true)  for (let i = 0; i < 2; i++) pool.push("rain");
-    if (storage.ParticleSun    === true)  for (let i = 0; i < 1; i++) pool.push("sun");
+    if (storage.particleStars  !== false) for (let i = 0; i < 3; i++) pool.push("stars");
+    if (storage.particleLeaves !== false) for (let i = 0; i < 2; i++) pool.push("leaves");
+    if (storage.particleRain   === true)  for (let i = 0; i < 2; i++) pool.push("rain");
+    if (storage.particleSun    === true)  for (let i = 0; i < 1; i++) pool.push("sun");
     if (pool.length === 0) pool.push("stars");
     return pool;
 }
@@ -37,7 +38,7 @@ let patches = [];
 const particles = [];
 let ready = false;
 
-// splash stuff
+// rain splash
 const splashes: { id: number; x: number; anim: Animated.Value; opacity: Animated.Value }[] = [];
 let splashId = 0;
 
@@ -87,73 +88,53 @@ function makeParticle(index, scatter = false) {
         ? 3 + Math.random() * 4
         : cfg.size[0] + Math.random() * cfg.size[1];
 
-    const duration = cfg.duration[0] + Math.random() * cfg.duration[1];
-    const opacity = !perfMode ? 0.6 + Math.random() * 0.4 : 1;
-    const rotation = Math.random() * 360;
-    const shouldRock = !perfMode && Math.random() > 0.3;
-    const rockSpeed = 1800 + Math.random() * 4000;
-    const rockDir = Math.random() > 0.5 ? 1 : -1;
-    const swayAmp = cfg.sway[0] + Math.random() * cfg.sway[1];
-    const swayDur = cfg.swayDur[0] + Math.random() * cfg.swayDur[1];
-    const color = cfg.colors[Math.floor(Math.random() * cfg.colors.length)];
-    const emoji = getEmoji(type, index);
-    const isCustom = type === "custom";
-
     return {
         id: index,
         type,
-        isCustom,
-        emoji,
+        isCustom: type === "custom",
+        emoji: getEmoji(type, index),
         x,
         size,
-        duration,
+        duration: cfg.duration[0] + Math.random() * cfg.duration[1],
         y,
         sway,
         rot,
         startY,
-        opacity,
-        rotation,
-        shouldRock,
-        rockSpeed,
-        rockDir,
-        swayAmp,
-        swayDur,
-        color,
+        opacity: !perfMode ? 0.6 + Math.random() * 0.4 : 1,
+        rotation: Math.random() * 360,
+        shouldRock: !perfMode && Math.random() > 0.3,
+        rockSpeed: 1800 + Math.random() * 4000,
+        rockDir: Math.random() > 0.5 ? 1 : -1,
+        swayAmp: cfg.sway[0] + Math.random() * cfg.sway[1],
+        swayDur: cfg.swayDur[0] + Math.random() * cfg.swayDur[1],
+        color: cfg.colors[Math.floor(Math.random() * cfg.colors.length)],
         rockRange: cfg.rock,
     };
 }
 
 function animateRock(p) {
     if (perfMode || !p.shouldRock) return;
-
     const rock = (dir) => {
         Animated.timing(p.rot, {
             toValue: dir * p.rockRange,
             duration: p.rockSpeed,
             useNativeDriver: true,
             easing: Easing.inOut(Easing.sin),
-        }).start(({ finished }) => {
-            if (finished) rock(-dir);
-        });
+        }).start(({ finished }) => { if (finished) rock(-dir); });
     };
-
     rock(p.rockDir);
 }
 
 function animateSway(p) {
     if (perfMode) return;
-
     const go = (dir) => {
         Animated.timing(p.sway, {
             toValue: dir * p.swayAmp,
             duration: p.swayDur,
             useNativeDriver: true,
             easing: Easing.inOut(Easing.sin),
-        }).start(({ finished }) => {
-            if (finished) go(-dir);
-        });
+        }).start(({ finished }) => { if (finished) go(-dir); });
     };
-
     go(Math.random() > 0.5 ? 1 : -1);
 }
 
@@ -193,7 +174,6 @@ function animateParticle(p) {
 function init() {
     if (ready) return;
     ready = true;
-
     for (let i = 0; i < 45; i++) {
         const p = makeParticle(i, true);
         particles.push(p);
@@ -201,7 +181,8 @@ function init() {
     }
 }
 
-const particle = React.memo(({ p }) => {
+// this shit need to be capitalized or it won't work
+const Particle = React.memo(({ p }) => {
     if (!perfMode) {
         const rotDeg = p.rot.interpolate({
             inputRange: [-360, 360],
@@ -222,9 +203,9 @@ const particle = React.memo(({ p }) => {
                     ]
                 }}
             >
-                {p.isCustom && storage.CustomImageURL ? (
+                {p.isCustom && storage.customImageURL ? (
                     <ReactNative.Image
-                        source={{ uri: storage.CustomImageURL }}
+                        source={{ uri: storage.customImageURL }}
                         style={{ width: p.size, height: p.size }}
                         resizeMode="contain"
                     />
@@ -259,7 +240,7 @@ const particle = React.memo(({ p }) => {
     }
 });
 
-const splashLayer = () => {
+const SplashLayer = () => {
     const [, tick] = React.useReducer((x: number) => x + 1, 0);
 
     React.useEffect(() => {
@@ -280,22 +261,12 @@ const splashLayer = () => {
                         height: 5,
                         opacity: s.opacity,
                         borderRadius: 3,
-                        backgroundColor: "#74B9FF22",
+                        backgroundColor: "#74b9ff22",
                         borderWidth: 1,
-                        borderColor: "#74B9FF99",
+                        borderColor: "#74b9ff99",
                         transform: [
-                            {
-                                scaleX: s.anim.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [0.1, 2.2],
-                                })
-                            },
-                            {
-                                scaleY: s.anim.interpolate({
-                                    inputRange: [0, 0.3, 1],
-                                    outputRange: [1, 0.6, 0.2],
-                                })
-                            }
+                            { scaleX: s.anim.interpolate({ inputRange: [0, 1], outputRange: [0.1, 2.2] }) },
+                            { scaleY: s.anim.interpolate({ inputRange: [0, 0.3, 1], outputRange: [1, 0.6, 0.2] }) }
                         ],
                     }}
                 />
@@ -304,7 +275,7 @@ const splashLayer = () => {
     );
 };
 
-const overlay = () => {
+const Overlay = () => {
     React.useEffect(() => { init(); }, []);
 
     return (
@@ -312,17 +283,14 @@ const overlay = () => {
             pointerEvents="none"
             style={{
                 position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
+                top: 0, left: 0, right: 0, bottom: 0,
                 zIndex: 9999,
             }}
         >
             {particles.map(p => (
-                <particle key={p.id} p={p} />
+                <Particle key={p.id} p={p} />
             ))}
-            <splashLayer />
+            <SplashLayer />
         </View>
     );
 };
@@ -339,7 +307,6 @@ export default {
                 if (!hasFlexOne) return;
 
                 let child = wrapper.children;
-
                 if (Array.isArray(child)) {
                     child = child.find(c => c?.type?.name === "NativeStackViewInner");
                 }
@@ -349,13 +316,10 @@ export default {
                 const routes = child?.props?.state?.routeNames;
                 if (!routes?.includes("main") || !routes?.includes("modal")) return;
 
-                const curr = Array.isArray(wrapper.children)
-                    ? wrapper.children
-                    : [wrapper.children];
-
+                const curr = Array.isArray(wrapper.children) ? wrapper.children : [wrapper.children];
                 wrapper.children = [
                     ...curr,
-                    React.createElement(overlay, { key: "falling-overlay" })
+                    React.createElement(Overlay, { key: "falling-overlay" })
                 ];
             })
         );
