@@ -7,13 +7,14 @@ import { storage } from "@vendetta/plugin";
 const { View, Animated, Dimensions, Easing } = ReactNative;
 const { width: sw, height: sh } = Dimensions.get("window");
 
-// this ensures reactive performance mode
+// performance ASS mode
 const perfMode = !!storage.snowPerformance;
 
 const configs = {
     stars:     { emoji: "\u2605", colors: ["#ffffff","#e8f4fd","#aed6f1","#f9e79f"], size: [8,6],   duration: [18000,10000], sway: [10,20], swayDur: [4000,4000], rock: 20 },
     leaves:    { emoji: "🍂",    colors: ["#e8a87c","#d46a2a","#c0392b","#e67e22","#a93226"], size: [14,8], duration: [18000,10000], sway: [25,40], swayDur: [2000,2000], rock: 35 },
-    rain:      { emoji: "|",     colors: ["#74b9ff","#0984e3","#a8d8ea","#ddefff"], size: [6,2],   duration: [4000,3000],   sway: [2,3],   swayDur: [8000,4000], rock: 0  },
+    // changed the rain to stop breaking physics and doing backflips in the air Xddddddddd
+    rain:      { emoji: "|",     colors: ["#74b9ff","#0984e3","#a8d8ea","#ddefff"], size: [12,4],  duration: [1200,800],    sway: [0,1],    swayDur: [8000,4000], rock: 0  },
     sun:       { emoji: "☀️",    colors: ["#f9ca24","#f0932b","#ffdd59"],           size: [16,8],  duration: [20000,12000], sway: [15,20], swayDur: [5000,4000], rock: 15 },
     christmas: { emojis: ["❄️","🌀","☃️","🏔️","\u2605"], colors: ["#ffffff","#aed6f1","#e8f4fd"], size: [14,8], duration: [16000,8000], sway: [20,30], swayDur: [3000,2000], rock: 25 },
     halloween: { emojis: ["🎃","🍭","🍬","🕯️","🕸️"], colors: ["#e67e22","#8e44ad","#2c3e50","#f39c12"], size: [16,8], duration: [14000,8000], sway: [20,30], swayDur: [2500,2000], rock: 30 },
@@ -38,7 +39,7 @@ let patches = [];
 const particles = [];
 let ready = false;
 
-// rain splash
+// water splash freaky logic
 const splashes: { id: number; x: number; anim: Animated.Value; opacity: Animated.Value }[] = [];
 let splashId = 0;
 
@@ -52,13 +53,13 @@ function splash(x: number) {
     Animated.parallel([
         Animated.timing(anim, {
             toValue: 1,
-            duration: 350,
+            duration: 200, // and for faster splash cuz the recent one was too freaky
             useNativeDriver: true,
             easing: Easing.out(Easing.quad),
         }),
         Animated.timing(opacity, {
             toValue: 0,
-            duration: 350,
+            duration: 200, // to fade faster
             useNativeDriver: true,
         }),
     ]).start(() => {
@@ -102,7 +103,7 @@ function makeParticle(index, scatter = false) {
         startY,
         opacity: !perfMode ? 0.6 + Math.random() * 0.4 : 1,
         rotation: Math.random() * 360,
-        shouldRock: !perfMode && Math.random() > 0.3,
+        shouldRock: !perfMode && Math.random() > 0.3 && type !== "rain",
         rockSpeed: 1800 + Math.random() * 4000,
         rockDir: Math.random() > 0.5 ? 1 : -1,
         swayAmp: cfg.sway[0] + Math.random() * cfg.sway[1],
@@ -113,7 +114,7 @@ function makeParticle(index, scatter = false) {
 }
 
 function animateRock(p) {
-    if (perfMode || !p.shouldRock) return;
+    if (perfMode || !p.shouldRock || p.type === "rain") return;
     const rock = (dir) => {
         Animated.timing(p.rot, {
             toValue: dir * p.rockRange,
@@ -126,7 +127,7 @@ function animateRock(p) {
 }
 
 function animateSway(p) {
-    if (perfMode) return;
+    if (perfMode || p.type === "rain") return;
     const go = (dir) => {
         Animated.timing(p.sway, {
             toValue: dir * p.swayAmp,
@@ -148,7 +149,7 @@ function animateParticle(p) {
         p.y.setValue(-50);
         p.sway.setValue(0);
         Animated.timing(p.y, {
-            toValue: sh + 50,
+            toValue: sh, // hitting the bottom edge precisely (IMPROTANNTTTTTTTT)
             duration: p.duration,
             useNativeDriver: true
         }).start(({ finished }) => {
@@ -160,8 +161,8 @@ function animateParticle(p) {
     };
 
     Animated.timing(p.y, {
-        toValue: sh + 50,
-        duration: p.duration * ((sh + 50 - p.startY) / (sh + 100)),
+        toValue: sh,
+        duration: p.duration * ((sh - p.startY) / (sh + 50)),
         useNativeDriver: true
     }).start(({ finished }) => {
         if (finished) {
@@ -181,10 +182,10 @@ function init() {
     }
 }
 
-// this shit need to be capitalized or it won't work
+// capitalized 'Particle' component to stop react from shitting itself, fuck react
 const Particle = React.memo(({ p }) => {
     if (!perfMode) {
-        const rotDeg = p.rot.interpolate({
+        const rotDeg = p.rot?.interpolate({
             inputRange: [-360, 360],
             outputRange: ["-360deg", "360deg"],
         });
@@ -199,7 +200,7 @@ const Particle = React.memo(({ p }) => {
                     transform: [
                         { translateY: p.y },
                         { translateX: p.sway },
-                        { rotate: p.shouldRock ? rotDeg : `${p.rotation}deg` }
+                        { rotate: p.shouldRock && rotDeg ? rotDeg : `${p.rotation}deg` }
                     ]
                 }}
             >
@@ -265,8 +266,8 @@ const SplashLayer = () => {
                         borderWidth: 1,
                         borderColor: "#74b9ff99",
                         transform: [
-                            { scaleX: s.anim.interpolate({ inputRange: [0, 1], outputRange: [0.1, 2.2] }) },
-                            { scaleY: s.anim.interpolate({ inputRange: [0, 0.3, 1], outputRange: [1, 0.6, 0.2] }) }
+                            { scaleX: s.anim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 3.5] }) }, // bigger splash spread
+                            { scaleY: s.anim.interpolate({ inputRange: [0, 0.3, 1], outputRange: [1, 0.8, 0.2] }) }
                         ],
                     }}
                 />
