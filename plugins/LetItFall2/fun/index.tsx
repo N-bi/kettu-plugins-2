@@ -1,7 +1,7 @@
 import { before } from "@vendetta/patcher";
 import { React, ReactNative } from "@vendetta/metro/common";
 import { General } from "@vendetta/ui/components";
-import settings from "./settings.js";
+import settings from "./settings.tsx";
 import { storage } from "@vendetta/plugin";
 
 const { View, Animated, Dimensions, Easing } = ReactNative;
