@@ -8,15 +8,16 @@ import { Forms } from "@vendetta/ui/components";
 const { ScrollView, View, Text, TextInput } = RN;
 const { FormRow, FormSwitchRow } = Forms;
 
-storage.ParticleStars   ??= true;
-storage.ParticleLeaves  ??= true;
-storage.ParticleRain    ??= false;
-storage.ParticleSun     ??= false;
-storage.ModeChristmas   ??= false;
-storage.ModeHalloween   ??= false;
-storage.ModeCustom      ??= false;
-storage.CustomImageURL  ??= "";
-storage.SnowPerformance ??= false;
+// default settings (should keep leaves/stars true since both are the defult)
+storage.particleStars   ??= true;
+storage.particleLeaves  ??= true;
+storage.particleRain    ??= false;
+storage.particleSun     ??= false;
+storage.modeChristmas   ??= false;
+storage.modeHalloween   ??= false;
+storage.modeCustom      ??= false;
+storage.customImageURL  ??= "";
+storage.snowPerformance ??= false;
 
 const styles = stylesheet.createThemedStyleSheet({
   versionText: {
@@ -76,15 +77,15 @@ const styles = stylesheet.createThemedStyleSheet({
   warningBox: {
     marginHorizontal: 16,
     marginTop: 8,
-    backgroundColor: "#F39C1220",
-    borderColor: "#F39C12",
+    backgroundColor: "#f39c1220", // hex changed for better look
+    borderColor: "#f39c12",
     borderWidth: 1,
     borderRadius: 12,
     padding: 12,
   },
   warningText: {
     fontSize: 12,
-    color: "#F39C12",
+    color: "#f39c12",
     fontWeight: "600",
   },
   inputBox: {
@@ -109,6 +110,7 @@ const styles = stylesheet.createThemedStyleSheet({
   },
 });
 
+// custom wrapper to keep everything clean ;p
 function BetterTableRowGroup({
   title,
   icon,
@@ -168,130 +170,133 @@ function BetterTableRowGroup({
   );
 }
 
+// exporting the main default settings
 export default function Settings() {
+  // hook to change UI when the storage is updated (hopefully this works)
   useProxy(storage);
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: semanticColors.BACKGROUND_PRIMARY }}>
 
-      {/* Header */}
+      {/* the header for main info about the plugin*/}
       <View style={styles.container}>
         <View style={styles.emojiGroup}>
           <Text style={styles.emojiText}>★</Text>
           <Text style={styles.emojiText}>🍂</Text>
         </View>
         <View style={styles.title}>
-          <Text style={styles.name}>Let it Fall</Text>
+          <Text style={styles.name}>let it fall</Text>
           <Text style={styles.author}>by xc_aux/nabi ✨</Text>
         </View>
       </View>
 
-      {/* Regular particles */}
-      <BetterTableRowGroup title="Particles">
+      {/* particals toggle */}
+      <BetterTableRowGroup title="particles">
         <FormSwitchRow
-          label="⭐ Stars"
-          subLabel="Slowly drifting glowing stars"
-          value={storage.ParticleStars}
-          onValueChange={(v: boolean) => { storage.ParticleStars = v; }}
+          label="⭐ stars"
+          subLabel="slowly drifting glowing stars"
+          value={storage.particleStars}
+          onValueChange={(v: boolean) => { storage.particleStars = v; }}
         />
         <FormSwitchRow
-          label="🍂 Leaves"
-          subLabel="Autumn leaves swaying as they fall"
-          value={storage.ParticleLeaves}
-          onValueChange={(v: boolean) => { storage.ParticleLeaves = v; }}
+          label="🍂 leaves"
+          subLabel="autumn leaves swaying as they fall"
+          value={storage.particleLeaves}
+          onValueChange={(v: boolean) => { storage.particleLeaves = v; }}
         />
         <FormSwitchRow
-          label="💧 Rain"
-          subLabel="Light rain drops falling down"
-          value={storage.ParticleRain}
-          onValueChange={(v: boolean) => { storage.ParticleRain = v; }}
+          label="💧 rain"
+          subLabel="light rain drops falling down"
+          value={storage.particleRain}
+          onValueChange={(v: boolean) => { storage.particleRain = v; }}
         />
         <FormSwitchRow
-          label="☀️ Sun"
-          subLabel="Floating suns drifting across the screen"
-          value={storage.ParticleSun}
-          onValueChange={(v: boolean) => { storage.ParticleSun = v; }}
-        />
-      </BetterTableRowGroup>
-
-      {/* special area */}
-      <BetterTableRowGroup title="Special">
-        <FormSwitchRow
-          label="🎄 Christmas"
-          subLabel="Snow, snowflakes, snowmen and more. Overrides particles above."
-          value={storage.ModeChristmas}
-          onValueChange={(v: boolean) => {
-            storage.ModeChristmas = v;
-            if (v) { storage.ModeHalloween = false; storage.ModeCustom = false; }
-          }}
-        />
-        <FormSwitchRow
-          label="🎃 Halloween"
-          subLabel="Pumpkins, candy, webs and candles. Overrides particles above."
-          value={storage.ModeHalloween}
-          onValueChange={(v: boolean) => {
-            storage.ModeHalloween = v;
-            if (v) { storage.ModeChristmas = false; storage.ModeCustom = false; }
-          }}
-        />
-        <FormSwitchRow
-          label="🖼️ Custom Image  [TEST]"
-          subLabel="Use your own image via a direct link. Experimental — may not work on all devices."
-          value={storage.ModeCustom}
-          onValueChange={(v: boolean) => {
-            storage.ModeCustom = v;
-            if (v) { storage.ModeChristmas = false; storage.ModeHalloween = false; }
-          }}
+          label="☀️ sun"
+          subLabel="floating suns drifting across the screen"
+          value={storage.particleSun}
+          onValueChange={(v: boolean) => { storage.particleSun = v; }}
         />
       </BetterTableRowGroup>
 
-      {/* Custom image URL input section */}
-      {storage.ModeCustom && (
+      {/* seasons/events defining */}
+      <BetterTableRowGroup title="special">
+        <FormSwitchRow
+          label="🎄 christmas"
+          subLabel="snow, snowflakes and more, overrides standard particles."
+          value={storage.modeChristmas}
+          onValueChange={(v: boolean) => {
+            storage.modeChristmas = v;
+            // enabling the seasonal/event in their specific date
+            if (v) { storage.modeHalloween = false; storage.modeCustom = false; }
+          }}
+        />
+        <FormSwitchRow
+          label="🎃 halloween"
+          subLabel="pumpkins, candy and webs, overrides standard particles."
+          value={storage.modeHalloween}
+          onValueChange={(v: boolean) => {
+            storage.modeHalloween = v;
+            if (v) { storage.modeChristmas = false; storage.modeCustom = false; }
+          }}
+        />
+        <FormSwitchRow
+          label="🖼️ custom image [test]"
+          subLabel="use your own image via direct link, this thing is laggy as hell."
+          value={storage.modeCustom}
+          onValueChange={(v: boolean) => {
+            storage.modeCustom = v;
+            if (v) { storage.modeChristmas = false; storage.modeHalloween = false; }
+          }}
+        />
+      </BetterTableRowGroup>
+
+      {/* insurance the fuckass uses .png/.gif */}
+      {storage.modeCustom && (
         <>
           <RN.View style={styles.warningBox}>
-            <RN.Text style={styles.warningText}>⚠️ TEST FEATURE — Custom images may cause lag or fail to load depending on the image host and your connection. Use a direct image URL ending in .png or .gif</RN.Text>
+            <RN.Text style={styles.warningText}>⚠️ this thing is laggy, u can use .gif or .png, still, its pretty much laggy</RN.Text>
           </RN.View>
           <RN.View style={styles.inputBox}>
             <TextInput
               style={styles.input}
               placeholder="https://example.com/image.png"
               placeholderTextColor={semanticColors.TEXT_MUTED}
-              value={storage.CustomImageURL}
-              onChangeText={(v: string) => { storage.CustomImageURL = v; }}
+              value={storage.customImageURL}
+              onChangeText={(v: string) => { storage.customImageURL = v; }}
               autoCapitalize="none"
               autoCorrect={false}
             />
           </RN.View>
-          <RN.Text style={styles.noteText}>Requires a restart after changing the URL.</RN.Text>
+          <RN.Text style={styles.noteText}>requires a restart to apply changes.</RN.Text>
         </>
       )}
 
-      {/* Settings */}
-      <BetterTableRowGroup title="Settings">
+      {/* performance settings- pretty much useless */}
+      <BetterTableRowGroup title="settings">
         <FormSwitchRow
-          label="Performance Mode"
-          subLabel="Reduces particle count and disables animations. Requires restart."
-          value={storage.SnowPerformance}
-          onValueChange={(v: boolean) => { storage.SnowPerformance = v; }}
+          label="performance mode"
+          subLabel="reduces particle count for smoother frames. requires restart."
+          value={storage.snowPerformance}
+          onValueChange={(v: boolean) => { storage.snowPerformance = v; }}
         />
       </BetterTableRowGroup>
 
-      {/* Links */}
-      <BetterTableRowGroup title="More">
+      {/* this labels the social section */}
+      <BetterTableRowGroup title="more">
         <FormRow
-          label="Source Code"
+          label="source code"
           leading={
             <FormRow.Icon source={getAssetIDByName("img_account_sync_github_white")} />
           }
           trailing={<FormRow.Icon source={getAssetIDByName("ic_launch")} />}
-          onPress={() => RN.Linking.openURL("https://github.com/N-bi/kettu-plugins-2")}
+          onPress={() => RN.Linking.openURL("https://n-bi.github.io/kettu-plugins-2")}
         />
       </BetterTableRowGroup>
 
+      {/* footer */}
       <RN.View style={{ height: 20 }} />
-      <RN.Text style={styles.versionText}>Let it Fall v2.0.0</RN.Text>
+      <RN.Text style={styles.versionText}>let it fall v2.0.0</RN.Text>
       <RN.View style={{ height: 32 }} />
     </ScrollView>
   );
-                          }
-
+}
