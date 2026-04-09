@@ -59,15 +59,15 @@ function animateRock(p) {
     rock(Math.random() > 0.5 ? 1 : -1);
 }
 
-function makeParticle(index, scatter = false) {
+function makeParticle(index) {
     const pool = getPool();
     const type = pool[index % pool.length];
     const cfg = configs[type];
     const isRain = type === "rain";
-
     const drift = isRain ? 180 : 0; 
-    const startX = isRain ? (Math.random() * (sw + drift)) : (Math.random() * sw);
-    const startY = scatter ? (Math.random() * sh) : -60;
+    const initialProgress = Math.random(); 
+    const startY = (initialProgress * (sh + 100)) - 50;
+    const startX = (Math.random() * (sw + drift)) - (isRain ? (drift * initialProgress) : 0);
 
     return {
         id: index,
@@ -85,6 +85,7 @@ function makeParticle(index, scatter = false) {
         swayAmp: cfg.sway[0],
         swayDur: cfg.swayDur[0],
         rockRange: cfg.rock,
+        initialProgress 
     };
 }
 
@@ -96,18 +97,26 @@ function animateParticle(p) {
         animateRock(p);
     }
 
-    const loop = () => {
-        const nextStartX = isRain ? (Math.random() * (sw + p.drift)) : (Math.random() * sw);
-        p.x.setValue(nextStartX);
-        p.y.setValue(-60);
-        
+    const startLoop = (isFirstRun = false) => {
+        const currentDuration = isFirstRun ? p.duration * (1 - p.initialProgress) : p.duration;
+        const targetY = sh + 50;
+        const currentX = p.x._value;
+        const targetX = currentX - (isRain ? (p.drift * (isFirstRun ? (1 - p.initialProgress) : 1)) : 0);
+
         Animated.parallel([
-            Animated.timing(p.y, { toValue: sh + 50, duration: p.duration, useNativeDriver: true, easing: Easing.linear }),
-            Animated.timing(p.x, { toValue: nextStartX - p.drift, duration: p.duration, useNativeDriver: true, easing: Easing.linear })
-        ]).start(({ finished }) => { if (finished) loop(); });
+            Animated.timing(p.y, { toValue: targetY, duration: currentDuration, useNativeDriver: true, easing: Easing.linear }),
+            Animated.timing(p.x, { toValue: targetX, duration: currentDuration, useNativeDriver: true, easing: Easing.linear })
+        ]).start(({ finished }) => {
+            if (finished) {
+                const resetX = isRain ? (Math.random() * (sw + p.drift)) : (Math.random() * sw);
+                p.x.setValue(resetX);
+                p.y.setValue(-60);
+                startLoop(false);
+            }
+        });
     };
 
-    loop();
+    startLoop(true);
 }
 
 const Particle = React.memo(({ p }) => {
@@ -127,7 +136,7 @@ const Particle = React.memo(({ p }) => {
                 transform: [
                     { translateX: p.x },
                     { translateY: p.y },
-                    { translateX: p.sway }, 
+                    { translateX: p.sway },
                     { rotate: isRain ? "20deg" : rotation }, 
                     { scaleX: isRain ? 0.15 : 1 },
                     { scaleY: isRain ? 1.8 : 1 }
@@ -150,7 +159,7 @@ const Overlay = () => {
         if (!ready) {
             ready = true;
             for (let i = 0; i < 50; i++) {
-                const p = makeParticle(i, true);
+                const p = makeParticle(i);
                 particles.push(p);
                 animateParticle(p);
             }
