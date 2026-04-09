@@ -13,8 +13,8 @@ const perfMode = !!storage.snowPerformance;
 const configs = {
     stars:     { emoji: "\u2605", colors: ["#ffffff","#e8f4fd","#aed6f1","#f9e79f"], size: [8,6],   duration: [18000,10000], sway: [10,20], swayDur: [4000,4000], rock: 20 },
     leaves:    { emoji: "🍂",    colors: ["#e8a87c","#d46a2a","#c0392b","#e67e22","#a93226"], size: [14,8], duration: [18000,10000], sway: [25,40], swayDur: [2000,2000], rock: 35 },
-    // slowed down slightly, hopefully this shit fixes it
-    rain:      { emoji: "|",     colors: ["#74b9ff","#0984e3","#a8d8ea","#ddefff"], size: [16,6],  duration: [2200,1200],   sway: [0,1],    swayDur: [8000,4000], rock: 0  },
+    // rain now is more rainy :3
+    rain:      { emoji: "/",     colors: ["#74b9ff","#0984e3","#a8d8ea","#ddefff"], size: [20,1.5], duration: [1200,800],    sway: [0,0],    swayDur: [0,0],    rock: 0  },
     sun:       { emoji: "☀️",    colors: ["#f9ca24","#f0932b","#ffdd59"],           size: [16,8],  duration: [20000,12000], sway: [15,20], swayDur: [5000,4000], rock: 15 },
     christmas: { emojis: ["❄️","🌀","☃️","🏔️","\u2605"], colors: ["#ffffff","#aed6f1","#e8f4fd"], size: [14,8], duration: [16000,8000], sway: [20,30], swayDur: [3000,2000], rock: 25 },
     halloween: { emojis: ["🎃","🍭","🍬","🕯️","🕸️"], colors: ["#e67e22","#8e44ad","#2c3e50","#f39c12"], size: [16,8], duration: [14000,8000], sway: [20,30], swayDur: [2500,2000], rock: 30 },
@@ -39,7 +39,7 @@ let patches = [];
 const particles = [];
 let ready = false;
 
-// water splash freaky logic - made it bigger and more responsive
+// splash falling function :p
 const splashes: { id: number; x: number; anim: Animated.Value; opacity: Animated.Value }[] = [];
 let splashId = 0;
 
@@ -51,27 +51,12 @@ function splash(x: number) {
     splashes.push({ id, x, anim, opacity });
 
     Animated.parallel([
-        Animated.timing(anim, {
-            toValue: 1,
-            duration: 250, // fast splashing
-            useNativeDriver: true,
-            easing: Easing.out(Easing.quad),
-        }),
-        Animated.timing(opacity, {
-            toValue: 0,
-            duration: 250, 
-            useNativeDriver: true,
-        }),
+        Animated.timing(anim, { toValue: 1, duration: 250, useNativeDriver: true, easing: Easing.out(Easing.quad) }),
+        Animated.timing(opacity, { toValue: 0, duration: 250, useNativeDriver: true }),
     ]).start(() => {
         const i = splashes.findIndex(s => s.id === id);
         if (i !== -1) splashes.splice(i, 1);
     });
-}
-
-function getEmoji(type, index) {
-    const cfg = configs[type];
-    if (cfg.emojis) return cfg.emojis[index % cfg.emojis.length];
-    return cfg.emoji;
 }
 
 function makeParticle(index, scatter = false) {
@@ -82,8 +67,9 @@ function makeParticle(index, scatter = false) {
     const startY = scatter ? Math.random() * sh : -50;
     const y = new Animated.Value(startY);
     const sway = new Animated.Value(0);
+    const initialX = Math.random() * sw;
+    const x = new Animated.Value(initialX);
     const rot = !perfMode ? new Animated.Value(0) : null;
-    const x = Math.random() * sw;
 
     const size = perfMode
         ? 3 + Math.random() * 4
@@ -93,7 +79,7 @@ function makeParticle(index, scatter = false) {
         id: index,
         type,
         isCustom: type === "custom",
-        emoji: getEmoji(type, index),
+        emoji: (cfg.emojis ? cfg.emojis[index % cfg.emojis.length] : cfg.emoji),
         x,
         size,
         duration: cfg.duration[0] + Math.random() * cfg.duration[1],
@@ -101,9 +87,9 @@ function makeParticle(index, scatter = false) {
         sway,
         rot,
         startY,
-        opacity: !perfMode ? 0.6 + Math.random() * 0.4 : 1,
-        // if its rain, rotation MUST be 0 or it looks dumb as hell, literally doing 360 in the air 😭
-        rotation: type === "rain" ? 0 : Math.random() * 360,
+        // reduces rain's viability
+        opacity: type === "rain" ? 0.5 : (!perfMode ? 0.6 + Math.random() * 0.4 : 1),
+        rotation: 0, 
         shouldRock: !perfMode && Math.random() > 0.3 && type !== "rain",
         rockSpeed: 1800 + Math.random() * 4000,
         rockDir: Math.random() > 0.5 ? 1 : -1,
@@ -114,63 +100,40 @@ function makeParticle(index, scatter = false) {
     };
 }
 
-function animateRock(p) {
-    if (perfMode || !p.shouldRock || p.type === "rain") return;
-    const rock = (dir) => {
-        Animated.timing(p.rot, {
-            toValue: dir * p.rockRange,
-            duration: p.rockSpeed,
-            useNativeDriver: true,
-            easing: Easing.inOut(Easing.sin),
-        }).start(({ finished }) => { if (finished) rock(-dir); });
-    };
-    rock(p.rockDir);
-}
-
-function animateSway(p) {
-    if (perfMode || p.type === "rain") return;
-    const go = (dir) => {
-        Animated.timing(p.sway, {
-            toValue: dir * p.swayAmp,
-            duration: p.swayDur,
-            useNativeDriver: true,
-            easing: Easing.inOut(Easing.sin),
-        }).start(({ finished }) => { if (finished) go(-dir); });
-    };
-    go(Math.random() > 0.5 ? 1 : -1);
-}
-
 function animateParticle(p) {
-    if (!perfMode) {
-        animateRock(p);
-        animateSway(p);
+    if (!perfMode && p.type !== "rain") {
+        const rock = (dir) => {
+            Animated.timing(p.rot, { toValue: dir * p.rockRange, duration: p.rockSpeed, useNativeDriver: true, easing: Easing.inOut(Easing.sin) }).start(({ finished }) => { if (finished) rock(-dir); });
+        };
+        rock(p.rockDir);
+
+        const go = (dir) => {
+            Animated.timing(p.sway, { toValue: dir * p.swayAmp, duration: p.swayDur, useNativeDriver: true, easing: Easing.inOut(Easing.sin) }).start(({ finished }) => { if (finished) go(-dir); });
+        };
+        go(Math.random() > 0.5 ? 1 : -1);
     }
 
     const loop = () => {
+        // this changes where the rain falls and generate so it doesn't look ass
+        const nextX = Math.random() * (sw + 100); 
+        p.x.setValue(nextX);
         p.y.setValue(-50);
-        p.sway.setValue(0);
-        Animated.timing(p.y, {
-            toValue: sh, 
-            duration: p.duration,
-            useNativeDriver: true
-        }).start(({ finished }) => {
+        
+        // rain falls diagonally to the left so it looks more realistic ffs
+        const windOffset = p.type === "rain" ? -80 : 0; 
+
+        Animated.parallel([
+            Animated.timing(p.y, { toValue: sh, duration: p.duration, useNativeDriver: true }),
+            Animated.timing(p.x, { toValue: nextX + windOffset, duration: p.duration, useNativeDriver: true })
+        ]).start(({ finished }) => {
             if (finished) {
-                if (p.type === "rain" && !perfMode) splash(p.x);
+                if (p.type === "rain" && !perfMode) splash(nextX + windOffset);
                 loop();
             }
         });
     };
 
-    Animated.timing(p.y, {
-        toValue: sh,
-        duration: p.duration * ((sh - p.startY) / (sh + 50)),
-        useNativeDriver: true
-    }).start(({ finished }) => {
-        if (finished) {
-            if (p.type === "rain" && !perfMode) splash(p.x);
-            loop();
-        }
-    });
+    loop();
 }
 
 function init() {
@@ -183,7 +146,7 @@ function init() {
     }
 }
 
-// capitalized 'Particle' to stop react from shitting itself, fuck react
+// capitalized 'Particle' to keep react from shitting itself
 const Particle = React.memo(({ p }) => {
     if (!perfMode) {
         const rotDeg = p.rot?.interpolate({
@@ -195,28 +158,24 @@ const Particle = React.memo(({ p }) => {
             <Animated.View
                 style={{
                     position: "absolute",
-                    left: p.x,
                     top: 0,
                     opacity: p.opacity,
                     transform: [
                         { translateY: p.y },
+                        { translateX: p.x },
                         { translateX: p.sway },
-                        { rotate: p.shouldRock && rotDeg ? rotDeg : `${p.rotation}deg` }
+                        { rotate: p.shouldRock && rotDeg ? rotDeg : `0deg` }
                     ]
                 }}
             >
                 {p.isCustom && storage.customImageURL ? (
-                    <ReactNative.Image
-                        source={{ uri: storage.customImageURL }}
-                        style={{ width: p.size, height: p.size }}
-                        resizeMode="contain"
-                    />
+                    <ReactNative.Image source={{ uri: storage.customImageURL }} style={{ width: p.size, height: p.size }} resizeMode="contain" />
                 ) : (
                     <ReactNative.Text style={{
                         fontSize: p.size,
                         color: p.color,
                         lineHeight: p.size * 1.3,
-                        ...(p.type === "rain" ? { fontWeight: "100" } : {})
+                        fontWeight: "100"
                     }}>
                         {p.emoji}
                     </ReactNative.Text>
@@ -225,26 +184,13 @@ const Particle = React.memo(({ p }) => {
         );
     } else {
         return (
-            <Animated.View
-                style={{
-                    position: "absolute",
-                    left: p.x,
-                    top: 0,
-                    width: p.size,
-                    height: p.size,
-                    borderRadius: p.size / 2,
-                    backgroundColor: p.color,
-                    opacity: p.opacity,
-                    transform: [{ translateY: p.y }]
-                }}
-            />
+            <Animated.View style={{ position: "absolute", top: 0, width: p.size, height: p.size, borderRadius: p.size / 2, backgroundColor: p.color, opacity: p.opacity, transform: [{ translateY: p.y }, { translateX: p.x }] }} />
         );
     }
 });
 
 const SplashLayer = () => {
     const [, tick] = React.useReducer((x: number) => x + 1, 0);
-
     React.useEffect(() => {
         const t = setInterval(tick, 50);
         return () => clearInterval(t);
@@ -258,16 +204,16 @@ const SplashLayer = () => {
                     style={{
                         position: "absolute",
                         bottom: 0,
-                        left: s.x - 12, // edited for more size
-                        width: 24,    // same as up
+                        left: s.x - 12,
+                        width: 24,
                         height: 6,
                         opacity: s.opacity,
                         borderRadius: 3,
-                        backgroundColor: "#74b9ff22",
+                        backgroundColor: "#74b9ff11",
                         borderWidth: 1,
-                        borderColor: "#74b9ff99",
+                        borderColor: "#74b9ff66",
                         transform: [
-                            { scaleX: s.anim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 5.0] }) }, // bigger splash
+                            { scaleX: s.anim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 4.0] }) },
                             { scaleY: s.anim.interpolate({ inputRange: [0, 0.3, 1], outputRange: [1, 0.8, 0.2] }) }
                         ],
                     }}
@@ -279,19 +225,9 @@ const SplashLayer = () => {
 
 const Overlay = () => {
     React.useEffect(() => { init(); }, []);
-
     return (
-        <View
-            pointerEvents="none"
-            style={{
-                position: "absolute",
-                top: 0, left: 0, right: 0, bottom: 0,
-                zIndex: 9999,
-            }}
-        >
-            {particles.map(p => (
-                <Particle key={p.id} p={p} />
-            ))}
+        <View pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999 }}>
+            {particles.map(p => <Particle key={p.id} p={p} />)}
             <SplashLayer />
         </View>
     );
@@ -304,30 +240,20 @@ export default {
             before("render", General.View, (args) => {
                 const [wrapper] = args;
                 if (!wrapper || !Array.isArray(wrapper.style)) return;
-
                 const hasFlexOne = wrapper.style.some(s => s?.flex === 1);
                 if (!hasFlexOne) return;
-
                 let child = wrapper.children;
                 if (Array.isArray(child)) {
                     child = child.find(c => c?.type?.name === "NativeStackViewInner");
                 }
-
                 if (child?.type?.name !== "NativeStackViewInner") return;
-
                 const routes = child?.props?.state?.routeNames;
                 if (!routes?.includes("main") || !routes?.includes("modal")) return;
-
                 const curr = Array.isArray(wrapper.children) ? wrapper.children : [wrapper.children];
-                wrapper.children = [
-                    ...curr,
-                    React.createElement(Overlay, { key: "falling-overlay" })
-                ];
+                wrapper.children = [...curr, React.createElement(Overlay, { key: "falling-overlay" })];
             })
         );
     },
-    onUnload: () => {
-        for (const x of patches) x();
-    },
+    onUnload: () => { for (const x of patches) x(); },
     settings
 };
