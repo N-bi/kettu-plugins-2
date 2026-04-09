@@ -10,13 +10,12 @@ const { width: sw, height: sh } = Dimensions.get("window");
 const perfMode = !!storage.snowPerformance;
 
 const configs = {
-    stars:     { emoji: "\u2605", colors: ["#ffffff","#e8f4fd","#aed6f1","#f9e79f"], size: [8,6],   duration: [18000,10000], sway: [10,20], swayDur: [4000,4000], rock: 20 },
-    leaves:    { emoji: "🍂",    colors: ["#e8a87c","#d46a2a","#c0392b","#e67e22","#a93226"], size: [14,8], duration: [18000,10000], sway: [25,40], swayDur: [2000,2000], rock: 35 },
+    stars:     { emoji: "\u2605", colors: ["#ffffff","#e8f4fd","#aed6f1","#f9e79f"], size: [8,6],   duration: [18000,10000], sway: [15,20], swayDur: [4000,4000], rock: 20 },
+    leaves:    { emoji: "🍂",    colors: ["#e8a87c","#d46a2a","#c0392b","#e67e22","#a93226"], size: [14,8], duration: [18000,10000], sway: [30,40], swayDur: [2500,2000], rock: 35 },
     rain:      { emoji: "|",     colors: ["#74b9ff","#0984e3","#a8d8ea","#ddefff"], size: [18,2],  duration: [900,600],     sway: [0,0],    swayDur: [0,0],    rock: 0  },
     sun:       { emoji: "☀️",    colors: ["#f9ca24","#f0932b","#ffdd59"],           size: [16,8],  duration: [20000,12000], sway: [15,20], swayDur: [5000,4000], rock: 15 },
     christmas: { emojis: ["❄️","\u2605"], colors: ["#ffffff","#aed6f1"], size: [14,8], duration: [16000,8000], sway: [20,30], swayDur: [3000,2000], rock: 25 },
     halloween: { emojis: ["🎃","🍭"], colors: ["#e67e22","#8e44ad"], size: [16,8], duration: [14000,8000], sway: [20,30], swayDur: [2500,2000], rock: 30 },
-    custom:    { colors: ["#ffffff"], size: [20,8], duration: [16000,8000], sway: [15,25], swayDur: [3000,2000], rock: 20 },
 };
 
 function getPool() {
@@ -34,16 +33,39 @@ let patches = [];
 const particles = [];
 let ready = false;
 
+function animateSway(p) {
+    if (p.swayAmp === 0) return;
+    const go = (dir) => {
+        Animated.timing(p.sway, {
+            toValue: dir * p.swayAmp,
+            duration: p.swayDur,
+            useNativeDriver: true,
+            easing: Easing.inOut(Easing.sin),
+        }).start(({ finished }) => { if (finished) go(-dir); });
+    };
+    go(Math.random() > 0.5 ? 1 : -1);
+}
+
+function animateRock(p) {
+    if (p.rockRange === 0) return;
+    const rock = (dir) => {
+        Animated.timing(p.rot, {
+            toValue: dir * p.rockRange,
+            duration: 2000 + Math.random() * 3000,
+            useNativeDriver: true,
+            easing: Easing.inOut(Easing.sin),
+        }).start(({ finished }) => { if (finished) rock(-dir); });
+    };
+    rock(Math.random() > 0.5 ? 1 : -1);
+}
+
 function makeParticle(index, scatter = false) {
     const pool = getPool();
     const type = pool[index % pool.length];
     const cfg = configs[type];
-
-    
     const isRain = type === "rain";
+
     const drift = isRain ? 180 : 0; 
-    
-    
     const startX = isRain ? (Math.random() * (sw + drift)) : (Math.random() * sw);
     const startY = scatter ? (Math.random() * sh) : -60;
 
@@ -60,12 +82,20 @@ function makeParticle(index, scatter = false) {
         opacity: isRain ? 0.4 : (0.6 + Math.random() * 0.4),
         drift,
         color: cfg.colors[Math.floor(Math.random() * cfg.colors.length)],
+        swayAmp: cfg.sway[0],
+        swayDur: cfg.swayDur[0],
+        rockRange: cfg.rock,
     };
 }
 
 function animateParticle(p) {
     const isRain = p.type === "rain";
     
+    if (!perfMode && !isRain) {
+        animateSway(p);
+        animateRock(p);
+    }
+
     const loop = () => {
         const nextStartX = isRain ? (Math.random() * (sw + p.drift)) : (Math.random() * sw);
         p.x.setValue(nextStartX);
@@ -77,16 +107,16 @@ function animateParticle(p) {
         ]).start(({ finished }) => { if (finished) loop(); });
     };
 
-    
-    Animated.parallel([
-        Animated.timing(p.y, { toValue: sh + 50, duration: p.duration * ((sh - p.y._value) / sh), useNativeDriver: true, easing: Easing.linear }),
-        Animated.timing(p.x, { toValue: p.x._value - (isRain ? p.drift * ((sh - p.y._value) / sh) : 0), duration: p.duration * ((sh - p.y._value) / sh), useNativeDriver: true, easing: Easing.linear })
-    ]).start(({ finished }) => { if (finished) loop(); });
+    loop();
 }
 
 const Particle = React.memo(({ p }) => {
     const isRain = p.type === "rain";
-    
+    const rotation = p.rot.interpolate({
+        inputRange: [-100, 100],
+        outputRange: ["-100deg", "100deg"]
+    });
+
     return (
         <Animated.View
             style={{
@@ -97,9 +127,10 @@ const Particle = React.memo(({ p }) => {
                 transform: [
                     { translateX: p.x },
                     { translateY: p.y },
-                    { rotate: isRain ? "20deg" : "0deg" }, 
-                    { scaleX: isRain ? 0.15 : 1 },       
-                    { scaleY: isRain ? 1.8 : 1 }          
+                    { translateX: p.sway }, 
+                    { rotate: isRain ? "20deg" : rotation }, 
+                    { scaleX: isRain ? 0.15 : 1 },
+                    { scaleY: isRain ? 1.8 : 1 }
                 ]
             }}
         >
